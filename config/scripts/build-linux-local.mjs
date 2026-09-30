@@ -28,11 +28,11 @@ export function buildLinuxElectronBuilderArgs(arch, extraArgs = []) {
     'exec',
     'electron-builder',
     '--config',
-    'config/electron-builder.config.cjs',
+    'uao/electron-builder.config.cjs',
     '--linux',
     'AppImage',
-    'deb',
-    'rpm',
+    'pacman',
+    'tar.gz',
     `--${arch}`,
     ...extraArgs
   ]

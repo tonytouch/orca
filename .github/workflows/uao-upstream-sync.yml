@@ -1,0 +1,48 @@
+name: UAO upstream sync
+
+# Opens a pull request that merges stablyai/orca main into this fork.
+# Preferred history for a small fork is a manual rebase; see UAO-FORK.md.
+# This job only runs on tonytouch/orca so a mirror does not file sync PRs.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    if: github.repository == 'tonytouch/orca'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Merge upstream and open a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/stablyai/orca.git
+          git fetch upstream main
+          if git merge-base --is-ancestor upstream/main HEAD; then
+            echo "main already contains upstream/main"
+            exit 0
+          fi
+          branch="uao/sync-upstream-$(date -u +%Y%m%d)"
+          git checkout -B "$branch" main
+          git merge upstream/main --no-edit -m "Merge upstream stablyai/orca main"
+          git push --force-with-lease -u origin "$branch"
+          body="Merges stablyai/orca main into this UAO fork. If there are conflicts, fix the files in uao/TOUCHED-UPSTREAM.md and keep the uao/ overlay. A hand rebase is described in UAO-FORK.md."
+          if gh pr view "$branch" --json url >/dev/null 2>&1; then
+            echo "Updated existing sync pull request for $branch"
+            exit 0
+          fi
+          gh pr create --base main --head "$branch" --title "Sync upstream Orca" --body "$body"

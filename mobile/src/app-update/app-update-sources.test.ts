@@ -17,9 +17,9 @@ const release050 = fixture('github-release-mobile-android-v0.0.50.json')
 const lookup = fixture('itunes-lookup-com.stably.orca.mobile.json')
 
 const REFS_URL =
-  'https://api.github.com/repos/stablyai/orca/git/matching-refs/tags/mobile-android-v'
+  'https://api.github.com/repos/tonytouch/orca/git/matching-refs/tags/mobile-android-v'
 const releaseUrl = (version: string) =>
-  `https://api.github.com/repos/stablyai/orca/releases/tags/mobile-android-v${version}`
+  `https://api.github.com/repos/tonytouch/orca/releases/tags/mobile-android-v${version}`
 
 function fakeFetch(routes: Record<string, { status: number; body?: unknown }>) {
   const requested: string[] = []

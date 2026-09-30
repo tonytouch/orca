@@ -58,7 +58,15 @@ describe('local Linux build target', () => {
     )
 
     expect(buildLinuxElectronBuilderArgs('x64')).toEqual(
-      expect.arrayContaining(['--linux', 'AppImage', 'deb', 'rpm', '--x64'])
+      expect.arrayContaining([
+        '--config',
+        'uao/electron-builder.config.cjs',
+        '--linux',
+        'AppImage',
+        'pacman',
+        'tar.gz',
+        '--x64'
+      ])
     )
 
     runLocalLinuxBuild({

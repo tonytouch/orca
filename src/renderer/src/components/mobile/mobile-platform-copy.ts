@@ -1,5 +1,6 @@
 import type { Platform } from './MobileHero'
 import { translate } from '@/i18n/i18n'
+import { UAO_RELEASES_PAGE_URL } from '../../../../shared/uao-product'
 
 // iOS ships two App Store tracks: the public App Store build (slower, ~weekly)
 // and the TestFlight preview build (daily). Android only ships one APK track.
@@ -22,7 +23,7 @@ const IOS_CHANNEL_COPY: Record<IosChannel, InstallCopy> = {
 
 const ANDROID_COPY: InstallCopy = {
   ctaLabel: 'Download APK',
-  url: 'https://github.com/stablyai/orca/releases/download/mobile-android-v0.0.48/app-release.apk'
+  url: UAO_RELEASES_PAGE_URL
 }
 
 export function getInstallCopy(platform: Platform, iosChannel: IosChannel): InstallCopy {
