@@ -20,6 +20,9 @@ describe('UAO electron-builder config', () => {
   it('builds an AppImage, a pacman package, a tar archive, and an unsigned macOS dmg', () => {
     expect(config.linux.target).toEqual(['AppImage', 'pacman', 'tar.gz'])
     expect(config.linux.executableName).toBe('uao')
+    expect(config.linux.syncDesktopName).toBe(true)
+    expect(config.linux.artifactName).toBe('uao-linux-${arch}.${ext}')
+    expect(config.pacman.packageName).toBe('uao')
     expect(config.mac.target).toEqual([{ target: 'dmg', arch: ['x64', 'arm64'] }])
     expect(config.mac.identity).toBeNull()
     expect(config.mac.notarize).toBe(false)

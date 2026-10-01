@@ -6,7 +6,9 @@ These existing files are patched. On a rebase, expect conflicts here:
 
 | File | Why |
 | --- | --- |
-| `package.json` | `productName` UAO, homepage, author. `build:mac` / `build:linux` go through the scripts below. `build:mac:release` is the unsigned UAO mac build. |
+| `package.json` | `productName` UAO, `desktopName` `uao` (Linux window grouping), homepage, author. `name` stays `orca` (CLI and updater cache). `build:mac` / `build:linux` go through the scripts below. `build:mac:release` is the unsigned UAO mac build. |
+| `config/scripts/static-appimage-package-contract.cjs` | Also accepts `uao-linux.AppImage` and `uao-linux-arm64.AppImage`. The check still rejects any other filename. |
+| `config/scripts/static-appimage-package-contract.test.mjs` | Covers those two filenames. |
 | `src/renderer/index.html` | Window title. |
 | `src/main/uao-runtime.ts` | Chooses tonytouch vs stablyai update URLs from the app name. New file; listed because updater imports it. |
 | `src/shared/uao-product.ts` | Fork name, app id, GitHub repo. New file. |

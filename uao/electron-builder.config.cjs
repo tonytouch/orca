@@ -42,6 +42,9 @@ module.exports = {
     ...upstream.linux,
     executableName: product.linuxExecutableName,
     maintainer: product.githubOwner,
+    syncDesktopName: true,
+    // tar.gz has no config section. This names it; AppImage and pacman set their own.
+    artifactName: 'uao-linux-${arch}.${ext}',
     target: ['AppImage', 'pacman', 'tar.gz'],
     desktop: {
       entry: {
@@ -54,6 +57,8 @@ module.exports = {
     artifactName: linuxArm64 ? 'uao-linux-arm64.${ext}' : 'uao-linux.${ext}'
   },
   pacman: {
+    // Why: package.json name stays `orca` for the CLI. fpm would publish that name and collide with GNOME Orca.
+    packageName: product.linuxExecutableName,
     artifactName: 'uao-linux-${arch}.${ext}'
   }
 }
