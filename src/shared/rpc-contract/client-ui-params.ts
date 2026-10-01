@@ -118,7 +118,8 @@ export const TopLevelViewSchema = z.enum([
   'skills',
   'artifacts',
   'mobile',
-  'agent-os'
+  'agent-os',
+  'cloudroom'
 ])
 
 export const UiUpdateFields = z

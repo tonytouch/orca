@@ -112,6 +112,16 @@ export function createUiViewActions(set: UISliceSet, get: UISliceGet): Partial<U
       set((state) => ({
         activeView: state.previousViewBeforeAgentOs
       })),
+    openCloudRoomPage: () =>
+      set((state) => ({
+        activeView: 'cloudroom',
+        previousViewBeforeCloudRoom:
+          state.activeView === 'cloudroom' ? state.previousViewBeforeCloudRoom : state.activeView
+      })),
+    closeCloudRoomPage: () =>
+      set((state) => ({
+        activeView: state.previousViewBeforeCloudRoom
+      })),
     setNewWorkspaceDraft: (draft) => set({ newWorkspaceDraft: draft }),
     clearNewWorkspaceDraft: () => set({ newWorkspaceDraft: null })
   }

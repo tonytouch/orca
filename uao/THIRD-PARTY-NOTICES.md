@@ -16,4 +16,8 @@ The Agent OS client in this tree (repo-root `agent-os/`, plus the `src/**/agent-
 
 ## CloudRoom
 
-Not included in this tree yet. cloudroom-core is Apache-2.0 (davidondrej/cloudroom-core). Add its `LICENSE` and `NOTICE` beside the imported code when that work starts.
+UAO does not ship cloudroom-core and does not copy its client. `uao/cloudroom/` is fork code that calls the public HTTP API. The server Keith runs is a separate project:
+
+- Project: https://github.com/davidondrej/cloudroom-core
+- License: Apache-2.0
+- Copyright belongs to that repository's authors. See its `LICENSE` and `NOTICE`.

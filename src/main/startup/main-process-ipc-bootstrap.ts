@@ -4,6 +4,7 @@ import { logStartupMilestone } from './startup-diagnostics'
 import { mainProcessState as state } from './main-process-state'
 import { resolveOpenedMarkdownDocuments } from './os-opened-markdown-files'
 import { getAgentOsMainService } from '../agent-os/agent-os-main-service'
+import { getCloudroomMainService } from '../cloudroom/cloudroom-main-service'
 
 export function registerMainProcessIpcHandlers(): void {
   ipcMain.handle('app:awaitFirstWindowStartupServices', async () => {
@@ -69,4 +70,5 @@ export function registerMainProcessIpcHandlers(): void {
     }
   )
   getAgentOsMainService().registerIpcHandlers()
+  getCloudroomMainService().registerIpcHandlers()
 }

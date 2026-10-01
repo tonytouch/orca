@@ -5,7 +5,9 @@ import {
   AGENT_OS_DEFAULT_BASE_URL,
   AGENT_OS_DEFAULT_HERMES_URL,
   AGENT_OS_DEFAULT_OMNIROUTE_URL,
+  CLOUDROOM_DEFAULT_BASE_URL,
   normalizeAgentOsHttpUrl,
+  resolveCloudroomUrl,
   type AgentOsSavedEndpoints
 } from '../../src/shared/agent-os-endpoints'
 import { agentOsMobileStyles as styles } from './agent-os-styles'
@@ -28,6 +30,7 @@ export function AgentOsEndpointModal({
   const [baseUrl, setBaseUrl] = useState(initial.baseUrl)
   const [hermesUrl, setHermesUrl] = useState(initial.hermesUrl)
   const [omnirouteUrl, setOmnirouteUrl] = useState(initial.omnirouteUrl)
+  const [cloudroomUrl, setCloudroomUrl] = useState(initial.cloudroomUrl)
 
   useEffect(() => {
     if (!visible) {
@@ -36,13 +39,15 @@ export function AgentOsEndpointModal({
     setBaseUrl(initial.baseUrl)
     setHermesUrl(initial.hermesUrl)
     setOmnirouteUrl(initial.omnirouteUrl)
+    setCloudroomUrl(initial.cloudroomUrl)
   }, [visible, initial])
 
   const save = () => {
     onSave({
       baseUrl: normalizeAgentOsHttpUrl(baseUrl, AGENT_OS_DEFAULT_BASE_URL),
       hermesUrl: normalizeAgentOsHttpUrl(hermesUrl, AGENT_OS_DEFAULT_HERMES_URL),
-      omnirouteUrl: normalizeAgentOsHttpUrl(omnirouteUrl, AGENT_OS_DEFAULT_OMNIROUTE_URL)
+      omnirouteUrl: normalizeAgentOsHttpUrl(omnirouteUrl, AGENT_OS_DEFAULT_OMNIROUTE_URL),
+      cloudroomUrl: resolveCloudroomUrl(cloudroomUrl, initial.cloudroomUrl)
     })
   }
 
@@ -52,7 +57,8 @@ export function AgentOsEndpointModal({
         <View style={styles.modalCard}>
           <Text style={styles.modalTitle}>Configure Agent OS Endpoints</Text>
           <Text style={styles.modalSubtitle}>
-            Agent OS, Hermes, and Omniroute on the Tailscale host. Tokens stay on the desktop app.
+            Agent OS, Hermes, Omniroute, and CloudRoom on the Tailscale host. Tokens stay on the
+            desktop app. Leave CloudRoom empty to hide it.
           </Text>
 
           <Text style={styles.modalLabel}>Agent OS</Text>
@@ -73,6 +79,18 @@ export function AgentOsEndpointModal({
             value={hermesUrl}
             onChangeText={setHermesUrl}
             placeholder={AGENT_OS_DEFAULT_HERMES_URL}
+            placeholderTextColor={colors.textMuted}
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="url"
+          />
+
+          <Text style={styles.modalLabel}>CloudRoom</Text>
+          <TextInput
+            style={styles.modalInput}
+            value={cloudroomUrl}
+            onChangeText={setCloudroomUrl}
+            placeholder={CLOUDROOM_DEFAULT_BASE_URL}
             placeholderTextColor={colors.textMuted}
             autoCapitalize="none"
             autoCorrect={false}

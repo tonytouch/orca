@@ -24,14 +24,15 @@ Default URLs (not secrets), overridable in the desktop Endpoints form and on the
 | Agent OS  | `http://100.90.167.20:5050`  |
 | Hermes    | `http://100.90.167.20:8787`  |
 | Omniroute | `http://100.90.167.20:20128` |
+| CloudRoom | `http://100.90.167.20:9840`  |
 
-Tokens are typed at runtime. The desktop app stores them with Electron `safeStorage` under the user-data directory and refuses to write a token when the OS keychain cannot encrypt. They are not in git. The phone keeps the three URLs in AsyncStorage and does not store tokens.
+Tokens are typed at runtime. The desktop app stores them with Electron `safeStorage` under the user-data directory and refuses to write a token when the OS keychain cannot encrypt. They are not in git. The phone keeps the URLs in AsyncStorage and does not store tokens. An empty CloudRoom URL hides that launch target.
 
 `AGENT_OS_REMOTE_URL` still overrides the Agent OS base URL for one launch.
 
 ## CloudRoom
 
-CloudRoom is not in this build. An environment provider would plug in beside the Agent OS supervisor (`agent-os/supervisor/agent-os-backend-supervisor.ts`, started from `src/main/agent-os/agent-os-main-service.ts`) as another remote endpoint the shell attaches to, the same way Hermes and Omniroute are configured URLs. It would not be a process this app spawns, and it would not turn the local Agent OS supervisor on.
+CloudRoom is a second remote endpoint, not a process this app starts. The HTTP provider lives in [`uao/cloudroom/`](../cloudroom/README.md). The desktop page lists server sessions and polls their events. It does not turn the local Agent OS supervisor on.
 
 ## Vendor notes
 

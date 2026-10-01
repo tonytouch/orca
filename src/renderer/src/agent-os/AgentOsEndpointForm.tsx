@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   AGENT_OS_DEFAULT_ENDPOINTS,
+  UAO_ENDPOINTS_SAVED_EVENT,
   type AgentOsEndpointConfig,
   type AgentOsPublicConfig,
   type AgentOsTokenService
@@ -16,24 +17,29 @@ type AgentOsEndpointFormProps = {
 const TOKEN_FIELDS: { service: AgentOsTokenService; label: string }[] = [
   { service: 'agent-os', label: 'Agent OS token' },
   { service: 'hermes', label: 'Hermes token' },
-  { service: 'omniroute', label: 'Omniroute token' }
+  { service: 'omniroute', label: 'Omniroute token' },
+  { service: 'cloudroom', label: 'CloudRoom token' }
 ]
+
+const EMPTY_TOKENS: Record<AgentOsTokenService, string> = {
+  'agent-os': '',
+  hermes: '',
+  omniroute: '',
+  cloudroom: ''
+}
 
 export function AgentOsEndpointForm({
   config,
   onSaved
 }: AgentOsEndpointFormProps): React.JSX.Element {
   const [draft, setDraft] = useState<AgentOsEndpointConfig>(config)
-  const [tokens, setTokens] = useState<Record<AgentOsTokenService, string>>({
-    'agent-os': '',
-    hermes: '',
-    omniroute: ''
-  })
+  const [tokens, setTokens] = useState<Record<AgentOsTokenService, string>>(EMPTY_TOKENS)
   const [message, setMessage] = useState<string | null>(null)
 
   const save = async (): Promise<void> => {
     setMessage(null)
     const next = await window.api.agentOs.setConfig(draft)
+    window.dispatchEvent(new Event(UAO_ENDPOINTS_SAVED_EVENT))
     for (const field of TOKEN_FIELDS) {
       const value = tokens[field.service].trim()
       if (!value) {
@@ -46,7 +52,7 @@ export function AgentOsEndpointForm({
         return
       }
     }
-    setTokens({ 'agent-os': '', hermes: '', omniroute: '' })
+    setTokens(EMPTY_TOKENS)
     onSaved(await window.api.agentOs.getConfig())
     setMessage('Saved. Tokens stay in the OS keychain.')
   }
@@ -60,8 +66,8 @@ export function AgentOsEndpointForm({
       }}
     >
       <p className="text-sm text-muted-foreground">
-        UAO attaches to the Agent OS server. It does not start a local backend unless you turn that
-        on.
+        UAO attaches to Agent OS and CloudRoom. It does not start either server. Clear the CloudRoom
+        URL to hide that launch target.
       </p>
       <label className="flex flex-col gap-1 text-sm">
         Agent OS
@@ -85,6 +91,15 @@ export function AgentOsEndpointForm({
           value={draft.omnirouteUrl}
           onChange={(event) => setDraft({ ...draft, omnirouteUrl: event.target.value })}
           spellCheck={false}
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-sm">
+        CloudRoom
+        <Input
+          value={draft.cloudroomUrl}
+          onChange={(event) => setDraft({ ...draft, cloudroomUrl: event.target.value })}
+          spellCheck={false}
+          placeholder="Leave empty to hide CloudRoom"
         />
       </label>
       {TOKEN_FIELDS.map((field) => (

@@ -3,6 +3,7 @@ import {
   AGENT_OS_DEFAULT_BASE_URL,
   AGENT_OS_DEFAULT_HERMES_URL,
   AGENT_OS_DEFAULT_OMNIROUTE_URL,
+  CLOUDROOM_DEFAULT_BASE_URL,
   parseAgentOsSavedEndpoints
 } from './agent-os-endpoints'
 
@@ -11,7 +12,8 @@ describe('parseAgentOsSavedEndpoints', () => {
     expect(parseAgentOsSavedEndpoints('http://10.0.0.8:5050/')).toEqual({
       baseUrl: 'http://10.0.0.8:5050',
       hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
-      omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL
+      omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL,
+      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
     })
   })
 
@@ -27,7 +29,8 @@ describe('parseAgentOsSavedEndpoints', () => {
     ).toEqual({
       baseUrl: AGENT_OS_DEFAULT_BASE_URL,
       hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
-      omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL
+      omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL,
+      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
     })
   })
 
@@ -43,7 +46,19 @@ describe('parseAgentOsSavedEndpoints', () => {
     ).toEqual({
       baseUrl: AGENT_OS_DEFAULT_BASE_URL,
       hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
-      omnirouteUrl: 'https://omni.example/route'
+      omnirouteUrl: 'https://omni.example/route',
+      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
+    })
+  })
+
+  it('keeps an explicit empty CloudRoom URL and defaults a missing one', () => {
+    expect(parseAgentOsSavedEndpoints(JSON.stringify({ cloudroomUrl: '' }))).toMatchObject({
+      cloudroomUrl: ''
+    })
+    expect(
+      parseAgentOsSavedEndpoints(JSON.stringify({ baseUrl: AGENT_OS_DEFAULT_BASE_URL }))
+    ).toMatchObject({
+      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
     })
   })
 

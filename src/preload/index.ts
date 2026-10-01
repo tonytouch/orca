@@ -59,6 +59,7 @@ import { cacheApi } from './api/cache-bridge'
 import { sessionApi } from './api/session-bridge'
 import { remoteWorkspaceApi } from './api/remote-workspace-bridge'
 import { agentOsApi } from './api/agent-os-bridge'
+import { cloudroomApi } from './api/cloudroom-bridge'
 import { updaterApi } from './api/updater-bridge'
 import { docPreviewApi } from './api/doc-preview-bridge'
 import { notebookApi } from './api/notebook-bridge'
@@ -184,7 +185,8 @@ const api = {
   mobile: mobileApi,
   agentStatus: agentStatusApi,
   speech: speechApi,
-  agentOs: agentOsApi
+  agentOs: agentOsApi,
+  cloudroom: cloudroomApi
 } satisfies PreloadApi
 
 if (process.contextIsolated) {

@@ -123,3 +123,4 @@ export type TopLevelView =
   | 'artifacts'
   | 'mobile'
   | 'agent-os'
+  | 'cloudroom'

@@ -15,7 +15,8 @@
     "../src/shared/**/*",
     "../src/relay/**/*",
     "../src/types/**/*",
-    "../agent-os/**/*"
+    "../agent-os/**/*",
+    "../uao/cloudroom/**/*"
   ],
   "compilerOptions": {
     "composite": true,

@@ -13,7 +13,8 @@ export function defaultAgentOsEndpoints(): AgentOsSavedEndpoints {
   return {
     baseUrl: AGENT_OS_DEFAULT_ENDPOINTS.baseUrl,
     hermesUrl: AGENT_OS_DEFAULT_ENDPOINTS.hermesUrl,
-    omnirouteUrl: AGENT_OS_DEFAULT_ENDPOINTS.omnirouteUrl
+    omnirouteUrl: AGENT_OS_DEFAULT_ENDPOINTS.omnirouteUrl,
+    cloudroomUrl: AGENT_OS_DEFAULT_ENDPOINTS.cloudroomUrl
   }
 }
 

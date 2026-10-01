@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Loader2, Settings as SettingsIcon } from 'lucide-react'
+import { Cloud, Loader2, Settings as SettingsIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { DropdownMenuItem, DropdownMenuShortcut } from '@/components/ui/dropdown-menu'
 import { getAgentCatalog, AgentIcon } from '@/lib/agent-catalog'
@@ -17,6 +17,7 @@ import {
 } from '../../../../shared/tui-agent-selection'
 import { translate } from '@/i18n/i18n'
 import { useStructuredAgentLaunchStatus } from '@/lib/structured-agent-session-launch'
+import { useCloudroomConfigured } from '@/cloudroom/use-cloudroom-configured'
 
 export type QuickLaunchAgentMenuItemsProps = {
   worktreeId: string
@@ -116,6 +117,8 @@ function QuickLaunchAgentMenuItemsInner({
     (s) => s.settings?.disabledTuiAgents ?? DEFAULT_DISABLED_TUI_AGENTS
   )
   const openSettingsPage = useAppStore((s) => s.openSettingsPage)
+  const openCloudRoomPage = useAppStore((s) => s.openCloudRoomPage)
+  const cloudroomConfigured = useCloudroomConfigured()
   const openSettingsTarget = useAppStore((s) => s.openSettingsTarget)
   const newAgentShortcut = useOptionalShortcutLabel('tab.newAgent')
   // One hook per structured provider: the launch registry is keyed by agent, and hooks cannot run
@@ -231,6 +234,12 @@ function QuickLaunchAgentMenuItemsInner({
           </DropdownMenuItem>
         )
       })}
+      {cloudroomConfigured ? (
+        <DropdownMenuItem onSelect={openCloudRoomPage}>
+          <Cloud className="size-4" />
+          {translate('auto.components.tab.bar.QuickLaunchButton.cloudroom', 'CloudRoom')}
+        </DropdownMenuItem>
+      ) : null}
       <DropdownMenuItem
         onSelect={openAgentSettings}
         className="gap-2 rounded-[7px] px-2 py-1.5 text-[12px] leading-5 font-medium text-muted-foreground"

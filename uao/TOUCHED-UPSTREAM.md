@@ -67,3 +67,26 @@ These existing files are patched:
 | `src/renderer/src/i18n/locales/en.json`                                                                                                                       | Catalog labels, and the menu/tray strings that say UAO.                                        |
 | `mobile/app/_layout.tsx`, `mobile/src/home/MobileHomeScreen.tsx`, `mobile/src/home/MobileHomeTopBar.tsx`, `mobile/src/settings/mobile-settings-menu-items.ts` | Phone route and entry points.                                                                  |
 | `mobile/package.json`                                                                                                                                         | `packageManager` pin matches the root pnpm 12.                                                 |
+
+## CloudRoom (phase 2)
+
+New fork code: `uao/cloudroom/**` (HTTP client and environment provider). New app wiring that is not an upstream file: `src/main/cloudroom/**`, `src/preload/api/cloudroom-bridge.ts`, `src/renderer/src/cloudroom/**`.
+
+Orca's runtime-environment type is a paired websocket host, and SSH/WSL own the PTY. CloudRoom is HTTP plus polled events, so it is a page and IPC service beside Agent OS rather than a fake entry in that pairing schema.
+
+These existing files are patched:
+
+| File                                                                                                                 | Why                                                                  |
+| -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `config/tsconfig.node.json`                                                                                          | Typecheck includes `uao/cloudroom/**`.                               |
+| `src/shared/agent-os-endpoints.ts`, `src/shared/agent-os-endpoints.test.ts`                                          | CloudRoom URL default (`:9840`), empty-URL hide, token service name. |
+| `src/main/agent-os/agent-os-endpoint-store.ts`, `src/main/agent-os/agent-os-endpoint-store.test.ts`                  | Persist the URL and the keychain token next to the Agent OS tokens.  |
+| `src/main/startup/main-process-ipc-bootstrap.ts`                                                                     | Registers CloudRoom IPC.                                             |
+| `src/preload/api-types.ts`, `src/preload/index.ts`                                                                   | Expose `window.api.cloudroom`.                                       |
+| `src/shared/ui-chrome-types.ts`, `src/shared/top-level-view.ts`, `src/shared/rpc-contract/client-ui-params.ts`       | `cloudroom` top-level view.                                          |
+| `src/renderer/src/store/slices/ui/ui-slice-contract-core.ts`, `ui-slice-task-actions.ts`, `ui-slice-view-actions.ts` | `openCloudRoomPage`.                                                 |
+| `src/renderer/src/app-shell/AppWorkspaceShell.tsx`                                                                   | Lazy CloudRoom view.                                                 |
+| `src/renderer/src/components/sidebar/SidebarNav.tsx`                                                                 | CloudRoom nav button, hidden when the URL is empty.                  |
+| `src/renderer/src/components/tab-bar/QuickLaunchButton.tsx`                                                          | CloudRoom item in the new-agent menu.                                |
+| `src/renderer/src/agent-os/AgentOsEndpointForm.tsx`                                                                  | CloudRoom URL and token fields.                                      |
+| `mobile/src/agent-os/agent-os-saved-endpoints.ts`, `mobile/app/agent-os-endpoint-modal.tsx`                          | Phone stores the CloudRoom URL only.                                 |

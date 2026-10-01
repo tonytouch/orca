@@ -2,7 +2,9 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { join } from 'node:path'
 import {
   AGENT_OS_DEFAULT_ENDPOINTS,
+  cloudroomUrlFromStored,
   normalizeAgentOsHttpUrl,
+  resolveCloudroomUrl,
   type AgentOsEndpointConfig,
   type AgentOsPublicConfig,
   type AgentOsTokenService
@@ -42,6 +44,7 @@ export function readAgentOsEndpoints(directory: string): AgentOsEndpointConfig {
       text('omnirouteUrl'),
       AGENT_OS_DEFAULT_ENDPOINTS.omnirouteUrl
     ),
+    cloudroomUrl: cloudroomUrlFromStored(stored),
     localSupervisor: stored.localSupervisor === true
   }
 }
@@ -55,6 +58,7 @@ export function writeAgentOsEndpoints(
     baseUrl: normalizeAgentOsHttpUrl(config.baseUrl, next.baseUrl),
     hermesUrl: normalizeAgentOsHttpUrl(config.hermesUrl, next.hermesUrl),
     omnirouteUrl: normalizeAgentOsHttpUrl(config.omnirouteUrl, next.omnirouteUrl),
+    cloudroomUrl: resolveCloudroomUrl(config.cloudroomUrl, next.cloudroomUrl),
     localSupervisor: config.localSupervisor === true
   }
   mkdirSync(directory, { recursive: true })
@@ -76,7 +80,8 @@ export function readAgentOsPublicConfig(directory: string): AgentOsPublicConfig 
     tokens: {
       'agent-os': hasAgentOsToken(directory, 'agent-os'),
       hermes: hasAgentOsToken(directory, 'hermes'),
-      omniroute: hasAgentOsToken(directory, 'omniroute')
+      omniroute: hasAgentOsToken(directory, 'omniroute'),
+      cloudroom: hasAgentOsToken(directory, 'cloudroom')
     }
   }
 }
