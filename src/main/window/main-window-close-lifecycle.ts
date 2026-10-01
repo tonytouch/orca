@@ -75,11 +75,8 @@ export function installMainWindowCloseLifecycle(args: {
     if (store.getUI().trayMinimizeNoticeShown !== true) {
       try {
         new Notification({
-          title: 'Orca',
-          body: translateMain(
-            'tray.minimizeNotice.body',
-            'Orca is still running in the system tray'
-          )
+          title: 'UAO',
+          body: translateMain('tray.minimizeNotice.body', 'UAO is still running in the system tray')
         }).show()
       } catch {
         // Notification is best-effort — never block hiding the window.

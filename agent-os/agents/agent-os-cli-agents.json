@@ -1,0 +1,159 @@
+{
+  "$comment": [
+    "Agent OS's CLI fleet mapped onto Orca's CONFIRMED agent schema (2026-09-20).",
+    "",
+    "What was verified in the vendored tree (v1.4.203 @ 776e424e):",
+    "  - The agent picker has NO JSON registry. The fleet is code:",
+    "      id union      src/shared/tui-agent.ts (TuiAgent, 37 built-ins)",
+    "      per-agent cfg src/shared/tui-agent-config.ts (TUI_AGENT_CONFIG: detectCmd,",
+    "                    launchCmd, promptInjectionMode, paste/trust knobs)",
+    "      UI catalog    src/renderer/src/lib/agent-catalog.tsx (label, cmd, icon,",
+    "                    homepage; i18n keys auto.lib.agent.catalog.*)",
+    "      display names src/shared/tui-agent-display-names.ts (ALL_TUI_AGENTS derives",
+    "                    from this map, not the union)",
+    "  - Per-agent customization is settings, not data:",
+    "      agentCmdOverrides.<id>   replaces the launch command (global-settings-types.ts:375)",
+    "      agentDefaultArgs.<id>    appended args (global-settings-types.ts:385)",
+    "      agentDefaultEnv.<id>     launch env (global-settings-types.ts:387)",
+    "  - The plugin path (orca-plugin.json contributes.agents: [{path}]) is",
+    "    DECLARED BUT UNUSED at this pin: the manifest schema accepts it",
+    "    (plugin-manifest.ts) and install validates the file's presence/size",
+    "    (plugin-artifact-validation.ts), but no runtime code loads contributed",
+    "    agent profiles. Do not build on it yet.",
+    "",
+    "STATUS: mapping verified, wiring pending (Phase 3).",
+    "  - ids marked \"builtin\" need only SETTINGS (agentCmdOverrides) to pin the",
+    "    binary Agent OS resolves in config.js — no code change.",
+    "  - ids marked \"needs-new-id\" require minting a TuiAgent union member:",
+    "    tui-agent.ts + TUI_AGENT_CONFIG + display names + catalog entry, then",
+    "    `pnpm run sync:localization-catalog` for the i18n key. Deliberately NOT",
+    "    done inside Orca's tree without a TOUCHPOINTS row.",
+    "",
+    "Conventions: `orcaId` is the TuiAgent string. `agentOsProgram` is what Agent",
+    "OS resolves (config.js). `cmdOverride` is the exact value to put in",
+    "agentCmdOverrides.<orcaId> so both systems launch the same binary; \"(bare)\"",
+    "means no pin — Agent OS also uses PATH."
+  ],
+  "schemaVersion": 2,
+  "schemaOfRecord": {
+    "idUnion": "orca/src/shared/tui-agent.ts",
+    "launchConfig": "orca/src/shared/tui-agent-config.ts",
+    "uiCatalog": "orca/src/renderer/src/lib/agent-catalog.tsx",
+    "displayNames": "orca/src/shared/tui-agent-display-names.ts",
+    "settingsKeys": ["agentCmdOverrides", "agentDefaultArgs", "agentDefaultEnv"]
+  },
+  "agents": [
+    {
+      "agentOsId": "agent-os-hermes",
+      "label": "Hermes (Agent OS chief agent)",
+      "agentOsProgram": "/home/tony/.local/bin/hermes",
+      "orcaId": "hermes",
+      "status": "builtin",
+      "orcaLaunch": {
+        "detectCmd": "hermes",
+        "launchCmd": "hermes --tui",
+        "promptInjectionMode": "hermes-query"
+      },
+      "cmdOverride": "/home/tony/.local/bin/hermes",
+      "notes": "Council seat; spawned by hermes_misc.js/hermes_kanban.js. Orca already knows hermes — only the binary pin is needed."
+    },
+    {
+      "agentOsId": "agent-os-codex",
+      "label": "Codex",
+      "agentOsProgram": "/home/tony/.local/bin/codex",
+      "orcaId": "codex",
+      "status": "builtin",
+      "orcaLaunch": { "detectCmd": "codex", "promptInjectionMode": "argv" },
+      "cmdOverride": "/home/tony/.local/bin/codex",
+      "notes": "Agent OS runs it via routes/agents/codex-adapter.js (NOT routes/codex.js, which is broken: imports runCodex from ./shared, which does not export it)."
+    },
+    {
+      "agentOsId": "agent-os-opencode",
+      "label": "Opencode",
+      "agentOsProgram": "/usr/bin/opencode",
+      "orcaId": "opencode",
+      "status": "builtin",
+      "orcaLaunch": { "detectCmd": "opencode", "promptInjectionMode": "flag-prompt" },
+      "cmdOverride": "/usr/bin/opencode",
+      "notes": "Also a council seat; vendored submodule MiMo-Code is separate from the CLI."
+    },
+    {
+      "agentOsId": "agent-os-prime",
+      "label": "Prime Agent",
+      "agentOsProgram": "prime-agent",
+      "orcaId": "prime-agent",
+      "status": "builtin",
+      "orcaLaunch": {
+        "detectCmd": "prime-agent",
+        "promptInjectionMode": "argv",
+        "argvPromptSeparator": "--"
+      },
+      "cmdOverride": "(bare)",
+      "notes": "Persistent `prime-agent --mode rpc` subprocess in lib/prime-harness.js. Orca's argv injection matches the same CLI surface."
+    },
+    {
+      "agentOsId": "agent-os-antigravity",
+      "label": "Antigravity (agy)",
+      "agentOsProgram": "/home/tony/.local/bin/agy",
+      "orcaId": "antigravity",
+      "status": "builtin",
+      "orcaLaunch": { "detectCmd": "agy", "promptInjectionMode": "flag-prompt-interactive" },
+      "cmdOverride": "(bare)",
+      "notes": "Orca's detectCmd `agy` already matches Agent OS's binary. Experimental stub mode (ANTIGRAVITY_FORCE_STUB=1) stays an Agent OS-side concern."
+    },
+    {
+      "agentOsId": "agent-os-claude-rc",
+      "label": "Claude Code (Agent OS human-in-the-loop tmux session)",
+      "agentOsProgram": "/home/tony/.local/bin/claude-rc",
+      "orcaId": "claude",
+      "status": "builtin-wrapper",
+      "orcaLaunch": {
+        "detectCmd": "claude",
+        "promptInjectionMode": "argv",
+        "draftPromptFlag": "--prefill"
+      },
+      "cmdOverride": null,
+      "notes": "Do NOT override the `claude` id — that would hijack every plain Claude tab. claude-rc is a distinct wrapper (routes/claude-rc.js, opt-in CLAUDE_RC_TOKEN). Needs its own TuiAgent id (see needs-new-id) or stays Agent-OS-only."
+    },
+    {
+      "agentOsId": "agent-os-kimchi",
+      "label": "Kimchi",
+      "agentOsProgram": "/home/tony/.local/bin/kimchi",
+      "orcaId": null,
+      "status": "needs-new-id",
+      "newIdRecipe": {
+        "id": "kimchi",
+        "detectCmd": "kimchi",
+        "suggestedPromptInjectionMode": "stdin-after-start",
+        "filesToTouch": [
+          "orca/src/shared/tui-agent.ts",
+          "orca/src/shared/tui-agent-config.ts",
+          "orca/src/shared/tui-agent-display-names.ts",
+          "orca/src/renderer/src/lib/agent-catalog.tsx"
+        ],
+        "postSteps": ["pnpm run sync:localization-catalog"]
+      },
+      "notes": "The harness that actually executes live kanban tasks (POST /api/kanban/approve|build -> dispatchPlanTasksLoop)."
+    },
+    {
+      "agentOsId": "agent-os-mavis",
+      "label": "Mavis / MiniMax Code",
+      "agentOsProgram": "/home/tony/ultimate-agent-os/tools/mavis-bridge.sh",
+      "orcaId": null,
+      "status": "needs-new-id",
+      "newIdRecipe": {
+        "id": "mavis",
+        "detectCmd": "mavis-bridge.sh",
+        "suggestedPromptInjectionMode": "stdin-after-start",
+        "filesToTouch": [
+          "orca/src/shared/tui-agent.ts",
+          "orca/src/shared/tui-agent-config.ts",
+          "orca/src/shared/tui-agent-display-names.ts",
+          "orca/src/renderer/src/lib/agent-catalog.tsx"
+        ],
+        "postSteps": ["pnpm run sync:localization-catalog"]
+      },
+      "notes": "Bridge to a local mavis daemon (:15321); MAVIS_BRIDGE_HOST/USER/SSH_PORT enable cross-host dispatch — surface those via agentDefaultEnv when the id exists."
+    }
+  ]
+}

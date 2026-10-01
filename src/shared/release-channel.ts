@@ -1,4 +1,5 @@
 import { compareAppVersions, isValidAppVersion } from './app-version'
+import { UAO_RELEASE_REPO } from './uao-product'
 
 export type ReleaseChannel = 'stable' | 'rc' | 'hourly' | 'daily' | 'adhoc'
 
@@ -226,12 +227,12 @@ export function getVersionChannel(version: string): ReleaseChannel | null {
  * A null version falls back to the plain releases listing (not /releases/latest
  * — /latest also breaks when GitHub's API is degraded).
  */
+/** UAO publishes every channel to one repo, so notes links do not follow the
+ *  upstream per-channel repositories. Updater feed selection is separate. */
 export function getReleaseNotesUrlForVersion(version: string | null): string {
-  const channel = version ? getVersionChannel(version) : null
-  const repo = channel ? getReleaseRepoForChannel(channel) : MAIN_RELEASE_REPO
   return version
-    ? `https://github.com/${repo}/releases/tag/v${normalizeTagToVersion(version)}`
-    : `https://github.com/${repo}/releases`
+    ? `https://github.com/${UAO_RELEASE_REPO}/releases/tag/v${normalizeTagToVersion(version)}`
+    : `https://github.com/${UAO_RELEASE_REPO}/releases`
 }
 
 /**

@@ -6,7 +6,9 @@ Upstream Orca stays the base. Fork-only code lives under `uao/`. Files we had to
 
 ## What this fork changes
 
-- The desktop app name is **UAO**, bundle id `com.tonytouch.uao`. The window title and `productName` say UAO. Most in-app sentences still say Orca; rewriting them would fight every upstream release. Icons are still Orca's.
+- The desktop app name is **UAO**, bundle id `com.tonytouch.uao`. The window title, About panel, menus, and tray say UAO. The command-line name and `orca://` pairing links stay as upstream wrote them. Most other in-app sentences still say Orca; rewriting them would fight every upstream release. Icons are still Orca's.
+- In-app release-notes links open **https://github.com/tonytouch/orca/releases**. The updater feed uses the same repo when the app name is UAO.
+- Agent OS is a remote page. The app attaches to `http://100.90.167.20:5050` (Hermes `:8787`, Omniroute `:20128`) and does not start a local backend unless you turn that on in Endpoints or set `AGENT_OS_LOCAL=1`. Tokens stay in the OS keychain. See [`uao/agent-os/README.md`](uao/agent-os/README.md).
 - The command-line name is still `orca` / `orca-ide`. Renaming it would collide with a large upstream test surface and with GNOME's screen reader on Linux (`/usr/bin/orca`). The Arch package name is `uao`, so pacman does not install over that screen reader. The updater cache directory stays `orca-updater` because electron-builder derives it from the npm package name.
 - The deep-link scheme stays `orca://` so the phone app can still pair.
 - Auto-update reads **https://github.com/tonytouch/orca/releases**, not stablyai. Set `UAO_DISABLE_AUTO_UPDATE=1` to turn checks off.

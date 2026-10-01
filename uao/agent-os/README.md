@@ -1,17 +1,38 @@
-# Agent OS port
+# Agent OS in UAO
 
-This directory is the place for Ultimate Agent OS. It is empty on purpose.
+The desktop and phone shells attach to Keith's Agent OS host. They do not ship the Python backend or Hermes.
 
-Phase 1 was supposed to port the integration that already exists on `tonytouch/ultimate-agent-os`, branch `agent/dashboard-audit-fixes-20260916`, where Orca v1.4.203 (commit `776e424e`) had been vendored under `orca/`. The notes name these entry points:
+Executable code stays at repo-root [`agent-os/`](../../agent-os/) because the main process, the TypeScript project, and the supervisor imports already point there. This directory holds the notes.
 
-- `orca/src/renderer/src/agent-os/AgentOsView.tsx`, used by `AppWorkspaceShell.tsx`
-- `agent-os-main-service.ts` (supervisor)
-- kimchi and mavis agents
-- `mobile/app/agent-os.tsx`
-- `docs/architecture/orca-agentos-merge.md`, `orca/ORCA-BASELINE.md`, `orca/TOUCHPOINTS.md`
+| Path                                                 | Role                                                                             |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `agent-os/supervisor/agent-os-backend-supervisor.ts` | Attaches to a running backend, or spawns `backend.js` only when local mode is on |
+| `agent-os/renderer/agent-os-api-client.ts`           | HTTP client for the `:5050` API                                                  |
+| `agent-os/agents/agent-os-cli-agents.json`           | kimchi and mavis launch notes                                                    |
+| `src/main/agent-os/agent-os-main-service.ts`         | IPC, health poll, settings                                                       |
+| `src/renderer/src/agent-os/AgentOsView.tsx`          | Embedded Agent OS page                                                           |
+| `mobile/app/agent-os.tsx`                            | Phone WebView of the same host                                                   |
 
-This agent could not read that repository. `gh` and `git ls-remote` both return 404 for `tonytouch/ultimate-agent-os` with the token on this run. Nothing from that tree was copied, and no substitute Agent OS UI was invented.
+## Remote by default
 
-Upstream Orca on this fork is past v1.4.203 (`package.json` is 1.4.214). When the private repo is readable, port by diffing `ultimate-agent-os/orca` against commit `776e424e`, then replaying that diff onto current `main`. Put new modules under `uao/agent-os/` or `src/renderer/src/agent-os/` and add every upstream file you must touch to `uao/TOUCHED-UPSTREAM.md`.
+The supervisor's default mode is `remote`. UAO starts that way unless Settings → Endpoints has "Also start a local backend on this machine" checked, or `AGENT_OS_LOCAL=1` is set. A remote attach never looks for `backend.js`.
 
-CloudRoom (Apache-2.0) is also not in this patch.
+Default URLs (not secrets), overridable in the desktop Endpoints form and on the phone:
+
+| Service   | URL                          |
+| --------- | ---------------------------- |
+| Agent OS  | `http://100.90.167.20:5050`  |
+| Hermes    | `http://100.90.167.20:8787`  |
+| Omniroute | `http://100.90.167.20:20128` |
+
+Tokens are typed at runtime. The desktop app stores them with Electron `safeStorage` under the user-data directory and refuses to write a token when the OS keychain cannot encrypt. They are not in git. The phone keeps the three URLs in AsyncStorage and does not store tokens.
+
+`AGENT_OS_REMOTE_URL` still overrides the Agent OS base URL for one launch.
+
+## CloudRoom
+
+CloudRoom is not in this build. An environment provider would plug in beside the Agent OS supervisor (`agent-os/supervisor/agent-os-backend-supervisor.ts`, started from `src/main/agent-os/agent-os-main-service.ts`) as another remote endpoint the shell attaches to, the same way Hermes and Omniroute are configured URLs. It would not be a process this app spawns, and it would not turn the local Agent OS supervisor on.
+
+## Vendor notes
+
+[`ORCA-BASELINE.md`](./ORCA-BASELINE.md), [`TOUCHPOINTS.md`](./TOUCHPOINTS.md), [`boundary-notes.md`](./boundary-notes.md), and [`design-tokens.md`](./design-tokens.md) are the notes from the v1.4.203 vendor. Paths in those files that start with `orca/` describe that older layout.

@@ -4,31 +4,64 @@ New fork files live under `uao/`, `UAO-FORK.md`, and `.github/workflows/uao-*.ym
 
 These existing files are patched. On a rebase, expect conflicts here:
 
-| File | Why |
-| --- | --- |
-| `package.json` | `productName` UAO, `desktopName` `uao` (Linux window grouping), homepage, author. `name` stays `orca` (CLI and updater cache). `build:mac` / `build:linux` go through the scripts below. `build:mac:release` is the unsigned UAO mac build. |
-| `config/scripts/static-appimage-package-contract.cjs` | Also accepts `uao-linux.AppImage` and `uao-linux-arm64.AppImage`. The check still rejects any other filename. |
-| `config/scripts/static-appimage-package-contract.test.mjs` | Covers those two filenames. |
-| `src/renderer/index.html` | Window title. |
-| `src/main/uao-runtime.ts` | Chooses tonytouch vs stablyai update URLs from the app name. New file; listed because updater imports it. |
-| `src/shared/uao-product.ts` | Fork name, app id, GitHub repo. New file. |
-| `src/main/updater-prerelease-feed.ts` | Atom feed and download URLs. |
-| `src/main/updater/updater-setup.ts` | Feed URL, and `UAO_DISABLE_AUTO_UPDATE`. |
-| `src/main/updater/updater-release-feed.ts` | Fallback feed URL. |
-| `src/main/updater-release-builds.ts` | Release list API repo. |
-| `config/scripts/build-linux-local.mjs` | UAO builder config; AppImage, pacman, tar.gz. |
-| `config/scripts/build-linux-local.test.mjs` | Matches that command line. |
-| `config/scripts/build-mac-local.mjs` | UAO builder config. |
-| `config/scripts/mobile-web-bundle-packaging-workflow-contract.test.mjs` | Counts the UAO build jobs. |
-| `mobile/app.json` | Display name UAO, Android package `com.tonytouch.uao`, no upstream Firebase file. |
-| `mobile/src/app-update/github-release-update-source.ts` | Android update check repo. |
-| `mobile/src/app-update/app-update-sources.test.ts` | Expected API host. |
-| `mobile/src/components/ProtocolBlockScreen.tsx` | "Get the update" link. |
-| `mobile/src/components/ProtocolBlockScreen.test.ts` | Same link. |
-| `mobile/src/components/HostProtocolGate.test.ts` | Same link. |
-| `src/renderer/src/components/mobile/mobile-platform-copy.ts` | Desktop page APK link. |
-| `src/renderer/src/components/settings/MobileSettingsPane.tsx` | Settings APK link. |
+| File                                                                    | Why                                                                                                                                                                                                                                         |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package.json`                                                          | `productName` UAO, `desktopName` `uao` (Linux window grouping), homepage, author. `name` stays `orca` (CLI and updater cache). `build:mac` / `build:linux` go through the scripts below. `build:mac:release` is the unsigned UAO mac build. |
+| `config/scripts/static-appimage-package-contract.cjs`                   | Also accepts `uao-linux.AppImage` and `uao-linux-arm64.AppImage`. The check still rejects any other filename.                                                                                                                               |
+| `config/scripts/static-appimage-package-contract.test.mjs`              | Covers those two filenames.                                                                                                                                                                                                                 |
+| `src/renderer/index.html`                                               | Window title.                                                                                                                                                                                                                               |
+| `src/main/uao-runtime.ts`                                               | Chooses tonytouch vs stablyai update URLs from the app name. New file; listed because updater imports it.                                                                                                                                   |
+| `src/shared/uao-product.ts`                                             | Fork name, app id, GitHub repo. New file.                                                                                                                                                                                                   |
+| `src/main/updater-prerelease-feed.ts`                                   | Atom feed and download URLs.                                                                                                                                                                                                                |
+| `src/main/updater/updater-setup.ts`                                     | Feed URL, and `UAO_DISABLE_AUTO_UPDATE`.                                                                                                                                                                                                    |
+| `src/main/updater/updater-release-feed.ts`                              | Fallback feed URL.                                                                                                                                                                                                                          |
+| `src/main/updater-release-builds.ts`                                    | Release list API repo.                                                                                                                                                                                                                      |
+| `config/scripts/build-linux-local.mjs`                                  | UAO builder config; AppImage, pacman, tar.gz.                                                                                                                                                                                               |
+| `config/scripts/build-linux-local.test.mjs`                             | Matches that command line.                                                                                                                                                                                                                  |
+| `config/scripts/build-mac-local.mjs`                                    | UAO builder config.                                                                                                                                                                                                                         |
+| `config/scripts/mobile-web-bundle-packaging-workflow-contract.test.mjs` | Counts the UAO build jobs.                                                                                                                                                                                                                  |
+| `mobile/app.json`                                                       | Display name UAO, Android package `com.tonytouch.uao`, no upstream Firebase file.                                                                                                                                                           |
+| `mobile/src/app-update/github-release-update-source.ts`                 | Android update check repo.                                                                                                                                                                                                                  |
+| `mobile/src/app-update/app-update-sources.test.ts`                      | Expected API host.                                                                                                                                                                                                                          |
+| `mobile/src/components/ProtocolBlockScreen.tsx`                         | "Get the update" link.                                                                                                                                                                                                                      |
+| `mobile/src/components/ProtocolBlockScreen.test.ts`                     | Same link.                                                                                                                                                                                                                                  |
+| `mobile/src/components/HostProtocolGate.test.ts`                        | Same link.                                                                                                                                                                                                                                  |
+| `src/renderer/src/components/mobile/mobile-platform-copy.ts`            | Desktop page APK link.                                                                                                                                                                                                                      |
+| `src/renderer/src/components/settings/MobileSettingsPane.tsx`           | Settings APK link.                                                                                                                                                                                                                          |
 
 `config/electron-builder.config.cjs` is **not** edited. UAO builds load `uao/electron-builder.config.cjs`, which wraps it. That keeps app id, targets, and the GitHub publish owner off the file upstream changes most often.
 
-The in-app updater still contains the upstream URL strings as the fallback for an app whose name is not `UAO`. Packaged and dev UAO set `productName` to `UAO`, and those checks use `tonytouch/orca`.
+The in-app updater still contains the upstream URL strings as the fallback for an app whose name is not `UAO`. Packaged and dev UAO set `productName` to `UAO`, and those checks use `tonytouch/orca`. Release-notes links (`getReleaseNotesUrlForVersion`) always open `tonytouch/orca`, including hourly, daily, and adhoc versions.
+
+## Agent OS and the UAO name (phase 1b)
+
+New code that is not an upstream file: `agent-os/**` (supervisor, API client, agent definitions), `src/main/agent-os/**`, `src/preload/api/agent-os-bridge.ts`, `src/renderer/src/agent-os/**`, `src/shared/agent-os-types.ts`, `src/shared/agent-os-endpoints.ts`, `mobile/app/agent-os.tsx`, `mobile/app/agent-os-endpoint-modal.tsx`, `mobile/app/agent-os-styles.ts`, `mobile/src/agent-os/**`. Notes live in `uao/agent-os/`.
+
+`config/electron-builder.config.cjs` and `config/scripts/build-computer-macos.mjs` were left untouched. The patch's single-arch mac target and glibc-floor skip stay out; UAO packaging already lives in `uao/electron-builder.config.cjs`.
+
+These existing files are patched:
+
+| File                                                                                                                                                          | Why                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `config/tsconfig.node.json`                                                                                                                                   | Typecheck includes `agent-os/**`.                                                              |
+| `config/scripts/dev-electron-bundle-identity.mjs`                                                                                                             | Dev bundle display name `UAO Dev`, matching `getDevInstanceIdentity`.                          |
+| `src/main/startup/main-process-ipc-bootstrap.ts`                                                                                                              | Registers Agent OS IPC.                                                                        |
+| `src/main/startup/main-process-ready.ts`                                                                                                                      | Starts the Agent OS attach after the ready runtime services.                                   |
+| `src/main/startup/main-process-quit.ts`                                                                                                                       | Stops the Agent OS service.                                                                    |
+| `src/main/startup/dev-instance-identity.ts`                                                                                                                   | App name `UAO` (About, dock, dev keychain `UAO Dev`). User-model id stays `com.stablyai.orca`. |
+| `src/main/menu/register-app-menu.ts`                                                                                                                          | Menu fallbacks say UAO.                                                                        |
+| `src/main/tray/system-tray.ts`                                                                                                                                | Tray tooltip and Open item say UAO.                                                            |
+| `src/main/window/main-window-close-lifecycle.ts`                                                                                                              | Close-to-tray notice says UAO.                                                                 |
+| `src/main/cli/cli-install-location.ts`                                                                                                                        | Windows dev install folder name follows `UAO Dev`. The CLI binary name is unchanged.           |
+| `src/preload/api-types.ts`, `src/preload/index.ts`                                                                                                            | Expose `window.api.agentOs`.                                                                   |
+| `src/shared/release-channel.ts`                                                                                                                               | Release-notes URLs use `tonytouch/orca`. Updater repo constants stay upstream.                 |
+| `src/shared/ui-chrome-types.ts`, `src/shared/top-level-view.ts`, `src/shared/rpc-contract/client-ui-params.ts`                                                | `agent-os` top-level view.                                                                     |
+| `src/shared/tui-agent.ts`, `src/shared/tui-agent-config.ts`, `src/shared/tui-agent-display-names.ts`, `src/shared/tui-agent-selection.ts`                     | kimchi and mavis, kept next to agents upstream added after v1.4.203.                           |
+| `src/shared/agent-kind.ts`, `src/shared/skills-cli-agent-keys.ts`, `src/shared/telemetry-property-schemas.ts`                                                 | Same two agents in kind, skills, and telemetry unions.                                         |
+| `src/renderer/src/app-shell/AppWorkspaceShell.tsx`                                                                                                            | Lazy Agent OS view.                                                                            |
+| `src/renderer/src/components/sidebar/SidebarNav.tsx`                                                                                                          | Agent OS nav button.                                                                           |
+| `src/renderer/src/store/slices/ui/ui-slice-contract-core.ts`, `ui-slice-task-actions.ts`, `ui-slice-view-actions.ts`                                          | `openAgentOsPage`.                                                                             |
+| `src/renderer/src/lib/agent-catalog.tsx`, `src/renderer/src/lib/agent-status.ts`                                                                              | Catalog entries and icons for kimchi and mavis.                                                |
+| `src/renderer/src/i18n/locales/en.json`                                                                                                                       | Catalog labels, and the menu/tray strings that say UAO.                                        |
+| `mobile/app/_layout.tsx`, `mobile/src/home/MobileHomeScreen.tsx`, `mobile/src/home/MobileHomeTopBar.tsx`, `mobile/src/settings/mobile-settings-menu-items.ts` | Phone route and entry points.                                                                  |
+| `mobile/package.json`                                                                                                                                         | `packageManager` pin matches the root pnpm 12.                                                 |

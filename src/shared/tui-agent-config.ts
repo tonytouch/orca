@@ -324,6 +324,14 @@ const TUI_AGENT_CONFIG_SOURCE: Record<TuiAgent, TuiAgentConfigSource> = {
     detectCmd: 'devin',
     // Why: `devin -- <prompt>` auto-submits immediately (docs.devin.ai/cli), so start the REPL with no argv prompt.
     promptInjectionMode: 'stdin-after-start'
+  },
+  kimchi: {
+    detectCmd: 'kimchi',
+    promptInjectionMode: 'stdin-after-start'
+  },
+  mavis: {
+    detectCmd: 'mavis-bridge.sh',
+    promptInjectionMode: 'stdin-after-start'
   }
 }
 
