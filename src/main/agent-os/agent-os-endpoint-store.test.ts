@@ -4,7 +4,9 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
   AGENT_OS_DEFAULT_BASE_URL,
-  CLOUDROOM_DEFAULT_BASE_URL
+  CLOUDROOM_DEFAULT_BASE_URL,
+  OPENMUSE_DEFAULT_API_URL,
+  OPENMUSE_DEFAULT_WEB_URL
 } from '../../shared/agent-os-endpoints'
 import type { SecretStore } from '../../shared/secret-store'
 import {
@@ -42,6 +44,8 @@ describe('agent os endpoint store', () => {
       hermesUrl: 'http://100.90.167.20:8787',
       omnirouteUrl: 'http://100.90.167.20:20128',
       cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
+      openmuseUrl: OPENMUSE_DEFAULT_WEB_URL,
+      openmuseApiUrl: OPENMUSE_DEFAULT_API_URL,
       localSupervisor: false
     })
   })
@@ -64,6 +68,17 @@ describe('agent os endpoint store', () => {
       cloudroomUrl: 'not a url'
     })
     expect(kept.cloudroomUrl).toBe('')
+    const clearedWeb = writeAgentOsEndpoints(directory, {
+      ...readAgentOsEndpoints(directory),
+      openmuseUrl: ''
+    })
+    expect(clearedWeb.openmuseUrl).toBe('')
+    expect(readAgentOsEndpoints(directory).openmuseApiUrl).toBe(OPENMUSE_DEFAULT_API_URL)
+    const keptWeb = writeAgentOsEndpoints(directory, {
+      ...readAgentOsEndpoints(directory),
+      openmuseUrl: 'not a url'
+    })
+    expect(keptWeb.openmuseUrl).toBe('')
   })
 
   it('stores the CloudRoom token only as ciphertext', () => {

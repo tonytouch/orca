@@ -13,7 +13,8 @@ const TOP_LEVEL_VIEW_LOOKUP: Record<TopLevelView, true> = {
   artifacts: true,
   mobile: true,
   'agent-os': true,
-  cloudroom: true
+  cloudroom: true,
+  openmuse: true
 }
 
 export function isTopLevelView(value: unknown): value is TopLevelView {

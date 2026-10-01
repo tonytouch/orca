@@ -14,7 +14,9 @@ export function defaultAgentOsEndpoints(): AgentOsSavedEndpoints {
     baseUrl: AGENT_OS_DEFAULT_ENDPOINTS.baseUrl,
     hermesUrl: AGENT_OS_DEFAULT_ENDPOINTS.hermesUrl,
     omnirouteUrl: AGENT_OS_DEFAULT_ENDPOINTS.omnirouteUrl,
-    cloudroomUrl: AGENT_OS_DEFAULT_ENDPOINTS.cloudroomUrl
+    cloudroomUrl: AGENT_OS_DEFAULT_ENDPOINTS.cloudroomUrl,
+    openmuseUrl: AGENT_OS_DEFAULT_ENDPOINTS.openmuseUrl,
+    openmuseApiUrl: AGENT_OS_DEFAULT_ENDPOINTS.openmuseApiUrl
   }
 }
 

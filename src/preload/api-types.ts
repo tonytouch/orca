@@ -66,6 +66,7 @@ import type { WorkspaceSessionApi } from './api/workspace-session-api'
 import type { FolderWorkspacesApi, SparsePresetsApi, WorktreeApi } from './api/worktree-api'
 import type { AgentOsBridgeApi } from './api/agent-os-bridge'
 import type { CloudroomBridgeApi } from './api/cloudroom-bridge'
+import type { OpenMuseBridgeApi } from './api/openmuse-bridge'
 
 // Flattens contracts that share one PreloadApi key: an intersection is not type-identical to the flat shape.
 type Merged<T> = { [K in keyof T]: T[K] }
@@ -157,6 +158,7 @@ export type PreloadApi = {
   speech: SpeechApi
   agentOs: AgentOsBridgeApi
   cloudroom: CloudroomBridgeApi
+  openmuse: OpenMuseBridgeApi
 }
 
 export type {

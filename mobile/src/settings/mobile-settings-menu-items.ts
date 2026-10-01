@@ -1,9 +1,20 @@
-import { Bell, Cpu, Globe, Info, MessageSquare, Mic, Terminal, Wrench } from 'lucide-react-native'
+import {
+  Bell,
+  Cpu,
+  Globe,
+  Info,
+  MessageSquare,
+  Mic,
+  Sparkles,
+  Terminal,
+  Wrench
+} from 'lucide-react-native'
 import type { MobileSettingsMenuItem } from './mobile-settings-menu'
 
 export function mobileSettingsMenuItems(push: (route: string) => void): MobileSettingsMenuItem[] {
   return [
     { label: 'Agent OS', icon: Cpu, onPress: () => push('/agent-os') },
+    { label: 'OpenMuse', icon: Sparkles, onPress: () => push('/openmuse') },
     { label: 'Terminal', icon: Terminal, onPress: () => push('/terminal-settings') },
     { label: 'Chat UI', icon: MessageSquare, onPress: () => push('/native-chat-settings') },
     { label: 'Browser', icon: Globe, onPress: () => push('/browser-settings') },

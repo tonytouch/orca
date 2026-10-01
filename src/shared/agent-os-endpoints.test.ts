@@ -4,6 +4,8 @@ import {
   AGENT_OS_DEFAULT_HERMES_URL,
   AGENT_OS_DEFAULT_OMNIROUTE_URL,
   CLOUDROOM_DEFAULT_BASE_URL,
+  OPENMUSE_DEFAULT_API_URL,
+  OPENMUSE_DEFAULT_WEB_URL,
   parseAgentOsSavedEndpoints
 } from './agent-os-endpoints'
 
@@ -13,7 +15,9 @@ describe('parseAgentOsSavedEndpoints', () => {
       baseUrl: 'http://10.0.0.8:5050',
       hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
       omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL,
-      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
+      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
+      openmuseUrl: OPENMUSE_DEFAULT_WEB_URL,
+      openmuseApiUrl: OPENMUSE_DEFAULT_API_URL
     })
   })
 
@@ -30,7 +34,9 @@ describe('parseAgentOsSavedEndpoints', () => {
       baseUrl: AGENT_OS_DEFAULT_BASE_URL,
       hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
       omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL,
-      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
+      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
+      openmuseUrl: OPENMUSE_DEFAULT_WEB_URL,
+      openmuseApiUrl: OPENMUSE_DEFAULT_API_URL
     })
   })
 
@@ -47,7 +53,9 @@ describe('parseAgentOsSavedEndpoints', () => {
       baseUrl: AGENT_OS_DEFAULT_BASE_URL,
       hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
       omnirouteUrl: 'https://omni.example/route',
-      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
+      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
+      openmuseUrl: OPENMUSE_DEFAULT_WEB_URL,
+      openmuseApiUrl: OPENMUSE_DEFAULT_API_URL
     })
   })
 
@@ -58,7 +66,15 @@ describe('parseAgentOsSavedEndpoints', () => {
     expect(
       parseAgentOsSavedEndpoints(JSON.stringify({ baseUrl: AGENT_OS_DEFAULT_BASE_URL }))
     ).toMatchObject({
-      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
+      cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
+      openmuseUrl: OPENMUSE_DEFAULT_WEB_URL,
+      openmuseApiUrl: OPENMUSE_DEFAULT_API_URL
+    })
+    expect(
+      parseAgentOsSavedEndpoints(JSON.stringify({ openmuseUrl: '', openmuseApiUrl: '   ' }))
+    ).toMatchObject({
+      openmuseUrl: '',
+      openmuseApiUrl: ''
     })
   })
 

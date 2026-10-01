@@ -25,6 +25,10 @@ Default URLs (not secrets), overridable in the desktop Endpoints form and on the
 | Hermes    | `http://100.90.167.20:8787`  |
 | Omniroute | `http://100.90.167.20:20128` |
 | CloudRoom | `http://100.90.167.20:9840`  |
+| OpenMuse web | `http://100.90.167.20:8081` |
+| OpenMuse API | `http://100.90.167.20:8787` |
+
+OpenMuse's API default is the same port as Hermes. Move one of them before both are running. See [`uao/openmuse/README.md`](../openmuse/README.md). An empty OpenMuse web URL hides that sidebar entry. The phone stores both URLs and no OpenMuse token.
 
 Tokens are typed at runtime. The desktop app stores them with Electron `safeStorage` under the user-data directory and refuses to write a token when the OS keychain cannot encrypt. They are not in git. The phone keeps the URLs in AsyncStorage and does not store tokens. An empty CloudRoom URL hides that launch target.
 
@@ -33,6 +37,10 @@ Tokens are typed at runtime. The desktop app stores them with Electron `safeStor
 ## CloudRoom
 
 CloudRoom is a second remote endpoint, not a process this app starts. The HTTP provider lives in [`uao/cloudroom/`](../cloudroom/README.md). The desktop page lists server sessions and polls their events. It does not turn the local Agent OS supervisor on.
+
+## OpenMuse
+
+OpenMuse is a third remote page, not a process this app starts. The desktop webview and the phone WebView load Keith's Expo web server. See [`uao/openmuse/README.md`](../openmuse/README.md).
 
 ## Vendor notes
 

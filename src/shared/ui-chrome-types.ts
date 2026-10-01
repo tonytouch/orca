@@ -124,3 +124,4 @@ export type TopLevelView =
   | 'mobile'
   | 'agent-os'
   | 'cloudroom'
+  | 'openmuse'

@@ -66,8 +66,8 @@ export function AgentOsEndpointForm({
       }}
     >
       <p className="text-sm text-muted-foreground">
-        UAO attaches to Agent OS and CloudRoom. It does not start either server. Clear the CloudRoom
-        URL to hide that launch target.
+        UAO attaches to Agent OS, CloudRoom, and OpenMuse. It does not start those servers. Clear
+        the CloudRoom URL to hide that launch target. Clear the OpenMuse web URL to hide that page.
       </p>
       <label className="flex flex-col gap-1 text-sm">
         Agent OS
@@ -100,6 +100,24 @@ export function AgentOsEndpointForm({
           onChange={(event) => setDraft({ ...draft, cloudroomUrl: event.target.value })}
           spellCheck={false}
           placeholder="Leave empty to hide CloudRoom"
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-sm">
+        OpenMuse web
+        <Input
+          value={draft.openmuseUrl}
+          onChange={(event) => setDraft({ ...draft, openmuseUrl: event.target.value })}
+          spellCheck={false}
+          placeholder="Leave empty to hide OpenMuse"
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-sm">
+        OpenMuse API
+        <Input
+          value={draft.openmuseApiUrl}
+          onChange={(event) => setDraft({ ...draft, openmuseApiUrl: event.target.value })}
+          spellCheck={false}
+          placeholder="Must match EXPO_PUBLIC_API_URL"
         />
       </label>
       {TOKEN_FIELDS.map((field) => (

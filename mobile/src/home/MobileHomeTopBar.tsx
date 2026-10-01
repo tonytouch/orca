@@ -1,14 +1,16 @@
-import { Cpu, Settings } from 'lucide-react-native'
+import { Cpu, Settings, Sparkles } from 'lucide-react-native'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { OrcaLogo } from '../components/OrcaLogo'
 import { colors, spacing } from '../theme/mobile-theme'
 
 export function MobileHomeTopBar({
   onOpenSettings,
-  onOpenAgentOs
+  onOpenAgentOs,
+  onOpenOpenMuse
 }: {
   onOpenSettings: () => void
   onOpenAgentOs?: () => void
+  onOpenOpenMuse?: () => void
 }) {
   return (
     <View style={styles.topBar}>
@@ -28,6 +30,15 @@ export function MobileHomeTopBar({
             <Cpu size={18} color={colors.accentBlue} />
           </Pressable>
         )}
+        {onOpenOpenMuse ? (
+          <Pressable
+            style={({ pressed }) => [styles.iconButton, pressed && styles.iconButtonPressed]}
+            onPress={onOpenOpenMuse}
+            accessibilityLabel="OpenMuse"
+          >
+            <Sparkles size={18} color={colors.accentBlue} />
+          </Pressable>
+        ) : null}
         <Pressable
           style={({ pressed }) => [styles.iconButton, pressed && styles.iconButtonPressed]}
           onPress={onOpenSettings}

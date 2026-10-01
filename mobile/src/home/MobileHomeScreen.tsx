@@ -116,6 +116,7 @@ export function MobileHomeScreen() {
       <MobileHomeTopBar
         onOpenSettings={() => data.router.push('/settings')}
         onOpenAgentOs={() => data.router.push('/agent-os')}
+        onOpenOpenMuse={() => data.router.push('/openmuse')}
       />
       {data.hostCatalog.length === 0 ? (
         <MobileHomeEmptyState

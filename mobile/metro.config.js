@@ -3,12 +3,16 @@ const { getDefaultConfig } = require('expo/metro-config')
 
 const projectRoot = __dirname
 const sharedRoot = path.resolve(projectRoot, '..', 'src', 'shared')
+const openmuseRoot = path.resolve(projectRoot, '..', 'uao', 'openmuse')
 
 const config = getDefaultConfig(projectRoot)
 
 // Why: mobile source-control prompts use the same pure builders as desktop.
 // Metro only watches mobile/ by default, so make repo-root shared modules visible.
-config.watchFolders = Array.from(new Set([...(config.watchFolders ?? []), sharedRoot]))
+// OpenMuse health is the same check the desktop page uses.
+config.watchFolders = Array.from(
+  new Set([...(config.watchFolders ?? []), sharedRoot, openmuseRoot])
+)
 
 /**
  * The shell kind the bundle is being built for, by the same rule `mobileShellBuildKind` applies in

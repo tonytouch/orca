@@ -16,7 +16,8 @@
     "../src/relay/**/*",
     "../src/types/**/*",
     "../agent-os/**/*",
-    "../uao/cloudroom/**/*"
+    "../uao/cloudroom/**/*",
+    "../uao/openmuse/**/*"
   ],
   "compilerOptions": {
     "composite": true,

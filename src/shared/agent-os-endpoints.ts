@@ -4,6 +4,10 @@ export const AGENT_OS_DEFAULT_HERMES_URL = 'http://100.90.167.20:8787'
 export const AGENT_OS_DEFAULT_OMNIROUTE_URL = 'http://100.90.167.20:20128'
 /** cloudroom-core's own default port, on the same Tailscale host. */
 export const CLOUDROOM_DEFAULT_BASE_URL = 'http://100.90.167.20:9840'
+/** Expo web, bound on all interfaces. The page does not read this from UAO at runtime. */
+export const OPENMUSE_DEFAULT_WEB_URL = 'http://100.90.167.20:8081'
+/** OpenMuse's own API port. Hermes on this host already uses 8787, so one of them must move. */
+export const OPENMUSE_DEFAULT_API_URL = 'http://100.90.167.20:8787'
 
 export const UAO_ENDPOINTS_SAVED_EVENT = 'uao-endpoints-saved'
 
@@ -14,6 +18,8 @@ export type AgentOsEndpointConfig = {
   hermesUrl: string
   omnirouteUrl: string
   cloudroomUrl: string
+  openmuseUrl: string
+  openmuseApiUrl: string
   /** When false, UAO only attaches to the remote backend and never spawns one. */
   localSupervisor: boolean
 }
@@ -27,22 +33,28 @@ export const AGENT_OS_DEFAULT_ENDPOINTS: AgentOsEndpointConfig = {
   hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
   omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL,
   cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
+  openmuseUrl: OPENMUSE_DEFAULT_WEB_URL,
+  openmuseApiUrl: OPENMUSE_DEFAULT_API_URL,
   localSupervisor: false
 }
 
 /** A missing key uses the Tailscale default. A blank value stays blank so the feature can hide. */
-export function cloudroomUrlFromStored(stored: Record<string, unknown>): string {
-  if (!Object.hasOwn(stored, 'cloudroomUrl')) {
-    return CLOUDROOM_DEFAULT_BASE_URL
+export function optionalHttpUrlFromStored(
+  stored: Record<string, unknown>,
+  key: string,
+  fallback: string
+): string {
+  if (!Object.hasOwn(stored, key)) {
+    return fallback
   }
-  const value = stored.cloudroomUrl
+  const value = stored[key]
   if (typeof value !== 'string' || !value.trim()) {
     return ''
   }
-  return normalizeAgentOsHttpUrl(value, CLOUDROOM_DEFAULT_BASE_URL)
+  return normalizeAgentOsHttpUrl(value, fallback)
 }
 
-export function resolveCloudroomUrl(incoming: string | undefined, previous: string): string {
+export function resolveOptionalHttpUrl(incoming: string | undefined, previous: string): string {
   if (incoming === undefined) {
     return previous
   }
@@ -50,6 +62,14 @@ export function resolveCloudroomUrl(incoming: string | undefined, previous: stri
     return ''
   }
   return normalizeAgentOsHttpUrl(incoming, previous)
+}
+
+export function cloudroomUrlFromStored(stored: Record<string, unknown>): string {
+  return optionalHttpUrlFromStored(stored, 'cloudroomUrl', CLOUDROOM_DEFAULT_BASE_URL)
+}
+
+export function resolveCloudroomUrl(incoming: string | undefined, previous: string): string {
+  return resolveOptionalHttpUrl(incoming, previous)
 }
 
 export function normalizeAgentOsHttpUrl(value: string, fallback: string): string {
@@ -70,7 +90,7 @@ export function normalizeAgentOsHttpUrl(value: string, fallback: string): string
 
 export type AgentOsSavedEndpoints = Pick<
   AgentOsEndpointConfig,
-  'baseUrl' | 'hermesUrl' | 'omnirouteUrl' | 'cloudroomUrl'
+  'baseUrl' | 'hermesUrl' | 'omnirouteUrl' | 'cloudroomUrl' | 'openmuseUrl' | 'openmuseApiUrl'
 >
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -101,7 +121,13 @@ export function parseAgentOsSavedEndpoints(raw: string | null): AgentOsSavedEndp
         baseUrl: savedUrlField(parsed, 'baseUrl', AGENT_OS_DEFAULT_BASE_URL),
         hermesUrl: savedUrlField(parsed, 'hermesUrl', AGENT_OS_DEFAULT_HERMES_URL),
         omnirouteUrl: savedUrlField(parsed, 'omnirouteUrl', AGENT_OS_DEFAULT_OMNIROUTE_URL),
-        cloudroomUrl: cloudroomUrlFromStored(parsed)
+        cloudroomUrl: cloudroomUrlFromStored(parsed),
+        openmuseUrl: optionalHttpUrlFromStored(parsed, 'openmuseUrl', OPENMUSE_DEFAULT_WEB_URL),
+        openmuseApiUrl: optionalHttpUrlFromStored(
+          parsed,
+          'openmuseApiUrl',
+          OPENMUSE_DEFAULT_API_URL
+        )
       }
     } catch {
       return null
@@ -111,6 +137,8 @@ export function parseAgentOsSavedEndpoints(raw: string | null): AgentOsSavedEndp
     baseUrl: normalizeAgentOsHttpUrl(trimmed, AGENT_OS_DEFAULT_BASE_URL),
     hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
     omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL,
-    cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL
+    cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
+    openmuseUrl: OPENMUSE_DEFAULT_WEB_URL,
+    openmuseApiUrl: OPENMUSE_DEFAULT_API_URL
   }
 }

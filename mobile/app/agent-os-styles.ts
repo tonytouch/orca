@@ -176,6 +176,7 @@ export const agentOsMobileStyles = StyleSheet.create({
   },
   modalCard: {
     width: '100%',
+    maxHeight: '90%',
     backgroundColor: colors.bgPanel,
     borderRadius: radii.card,
     borderWidth: 1,

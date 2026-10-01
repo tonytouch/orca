@@ -122,6 +122,16 @@ export function createUiViewActions(set: UISliceSet, get: UISliceGet): Partial<U
       set((state) => ({
         activeView: state.previousViewBeforeCloudRoom
       })),
+    openOpenMusePage: () =>
+      set((state) => ({
+        activeView: 'openmuse',
+        previousViewBeforeOpenMuse:
+          state.activeView === 'openmuse' ? state.previousViewBeforeOpenMuse : state.activeView
+      })),
+    closeOpenMusePage: () =>
+      set((state) => ({
+        activeView: state.previousViewBeforeOpenMuse
+      })),
     setNewWorkspaceDraft: (draft) => set({ newWorkspaceDraft: draft }),
     clearNewWorkspaceDraft: () => set({ newWorkspaceDraft: null })
   }

@@ -21,3 +21,12 @@ UAO does not ship cloudroom-core and does not copy its client. `uao/cloudroom/` 
 - Project: https://github.com/davidondrej/cloudroom-core
 - License: Apache-2.0
 - Copyright belongs to that repository's authors. See its `LICENSE` and `NOTICE`.
+
+## OpenMuse
+
+UAO does not ship OpenMuse and does not copy its client. The desktop and phone pages load the web app Keith runs. The health check calls that server's public `GET /api/health`.
+
+- Project: https://github.com/CopilotKit/OpenMuse
+- License: MIT
+- Checkout used for this integration: `d0b3a6b`
+- Copyright belongs to that repository's authors. See its `LICENSE`.

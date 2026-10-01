@@ -2,9 +2,12 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { join } from 'node:path'
 import {
   AGENT_OS_DEFAULT_ENDPOINTS,
-  cloudroomUrlFromStored,
+  CLOUDROOM_DEFAULT_BASE_URL,
+  OPENMUSE_DEFAULT_API_URL,
+  OPENMUSE_DEFAULT_WEB_URL,
   normalizeAgentOsHttpUrl,
-  resolveCloudroomUrl,
+  optionalHttpUrlFromStored,
+  resolveOptionalHttpUrl,
   type AgentOsEndpointConfig,
   type AgentOsPublicConfig,
   type AgentOsTokenService
@@ -44,7 +47,9 @@ export function readAgentOsEndpoints(directory: string): AgentOsEndpointConfig {
       text('omnirouteUrl'),
       AGENT_OS_DEFAULT_ENDPOINTS.omnirouteUrl
     ),
-    cloudroomUrl: cloudroomUrlFromStored(stored),
+    cloudroomUrl: optionalHttpUrlFromStored(stored, 'cloudroomUrl', CLOUDROOM_DEFAULT_BASE_URL),
+    openmuseUrl: optionalHttpUrlFromStored(stored, 'openmuseUrl', OPENMUSE_DEFAULT_WEB_URL),
+    openmuseApiUrl: optionalHttpUrlFromStored(stored, 'openmuseApiUrl', OPENMUSE_DEFAULT_API_URL),
     localSupervisor: stored.localSupervisor === true
   }
 }
@@ -58,7 +63,9 @@ export function writeAgentOsEndpoints(
     baseUrl: normalizeAgentOsHttpUrl(config.baseUrl, next.baseUrl),
     hermesUrl: normalizeAgentOsHttpUrl(config.hermesUrl, next.hermesUrl),
     omnirouteUrl: normalizeAgentOsHttpUrl(config.omnirouteUrl, next.omnirouteUrl),
-    cloudroomUrl: resolveCloudroomUrl(config.cloudroomUrl, next.cloudroomUrl),
+    cloudroomUrl: resolveOptionalHttpUrl(config.cloudroomUrl, next.cloudroomUrl),
+    openmuseUrl: resolveOptionalHttpUrl(config.openmuseUrl, next.openmuseUrl),
+    openmuseApiUrl: resolveOptionalHttpUrl(config.openmuseApiUrl, next.openmuseApiUrl),
     localSupervisor: config.localSupervisor === true
   }
   mkdirSync(directory, { recursive: true })

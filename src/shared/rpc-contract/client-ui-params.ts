@@ -119,7 +119,8 @@ export const TopLevelViewSchema = z.enum([
   'artifacts',
   'mobile',
   'agent-os',
-  'cloudroom'
+  'cloudroom',
+  'openmuse'
 ])
 
 export const UiUpdateFields = z

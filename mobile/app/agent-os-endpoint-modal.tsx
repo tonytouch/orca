@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Modal, Pressable, Text, TextInput, View } from 'react-native'
+import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { colors } from '../src/theme/mobile-theme'
 import {
   AGENT_OS_DEFAULT_BASE_URL,
   AGENT_OS_DEFAULT_HERMES_URL,
   AGENT_OS_DEFAULT_OMNIROUTE_URL,
   CLOUDROOM_DEFAULT_BASE_URL,
+  OPENMUSE_DEFAULT_API_URL,
+  OPENMUSE_DEFAULT_WEB_URL,
   normalizeAgentOsHttpUrl,
-  resolveCloudroomUrl,
+  resolveOptionalHttpUrl,
   type AgentOsSavedEndpoints
 } from '../../src/shared/agent-os-endpoints'
 import { agentOsMobileStyles as styles } from './agent-os-styles'
@@ -31,6 +33,8 @@ export function AgentOsEndpointModal({
   const [hermesUrl, setHermesUrl] = useState(initial.hermesUrl)
   const [omnirouteUrl, setOmnirouteUrl] = useState(initial.omnirouteUrl)
   const [cloudroomUrl, setCloudroomUrl] = useState(initial.cloudroomUrl)
+  const [openmuseUrl, setOpenmuseUrl] = useState(initial.openmuseUrl)
+  const [openmuseApiUrl, setOpenmuseApiUrl] = useState(initial.openmuseApiUrl)
 
   useEffect(() => {
     if (!visible) {
@@ -40,6 +44,8 @@ export function AgentOsEndpointModal({
     setHermesUrl(initial.hermesUrl)
     setOmnirouteUrl(initial.omnirouteUrl)
     setCloudroomUrl(initial.cloudroomUrl)
+    setOpenmuseUrl(initial.openmuseUrl)
+    setOpenmuseApiUrl(initial.openmuseApiUrl)
   }, [visible, initial])
 
   const save = () => {
@@ -47,7 +53,9 @@ export function AgentOsEndpointModal({
       baseUrl: normalizeAgentOsHttpUrl(baseUrl, AGENT_OS_DEFAULT_BASE_URL),
       hermesUrl: normalizeAgentOsHttpUrl(hermesUrl, AGENT_OS_DEFAULT_HERMES_URL),
       omnirouteUrl: normalizeAgentOsHttpUrl(omnirouteUrl, AGENT_OS_DEFAULT_OMNIROUTE_URL),
-      cloudroomUrl: resolveCloudroomUrl(cloudroomUrl, initial.cloudroomUrl)
+      cloudroomUrl: resolveOptionalHttpUrl(cloudroomUrl, initial.cloudroomUrl),
+      openmuseUrl: resolveOptionalHttpUrl(openmuseUrl, initial.openmuseUrl),
+      openmuseApiUrl: resolveOptionalHttpUrl(openmuseApiUrl, initial.openmuseApiUrl)
     })
   }
 
@@ -55,73 +63,100 @@ export function AgentOsEndpointModal({
     <Modal visible={visible} animationType="slide" transparent={true} onRequestClose={onClose}>
       <View style={styles.modalBackdrop}>
         <View style={styles.modalCard}>
-          <Text style={styles.modalTitle}>Configure Agent OS Endpoints</Text>
-          <Text style={styles.modalSubtitle}>
-            Agent OS, Hermes, Omniroute, and CloudRoom on the Tailscale host. Tokens stay on the
-            desktop app. Leave CloudRoom empty to hide it.
-          </Text>
+          <ScrollView keyboardShouldPersistTaps="handled">
+            <Text style={styles.modalTitle}>Configure Agent OS Endpoints</Text>
+            <Text style={styles.modalSubtitle}>
+              Agent OS, Hermes, Omniroute, CloudRoom, and OpenMuse on the Tailscale host. Tokens
+              stay on the desktop app. Leave CloudRoom or the OpenMuse web URL empty to hide that
+              page.
+            </Text>
 
-          <Text style={styles.modalLabel}>Agent OS</Text>
-          <TextInput
-            style={styles.modalInput}
-            value={baseUrl}
-            onChangeText={setBaseUrl}
-            placeholder={AGENT_OS_DEFAULT_BASE_URL}
-            placeholderTextColor={colors.textMuted}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-          />
+            <Text style={styles.modalLabel}>Agent OS</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={baseUrl}
+              onChangeText={setBaseUrl}
+              placeholder={AGENT_OS_DEFAULT_BASE_URL}
+              placeholderTextColor={colors.textMuted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+            />
 
-          <Text style={styles.modalLabel}>Hermes</Text>
-          <TextInput
-            style={styles.modalInput}
-            value={hermesUrl}
-            onChangeText={setHermesUrl}
-            placeholder={AGENT_OS_DEFAULT_HERMES_URL}
-            placeholderTextColor={colors.textMuted}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-          />
+            <Text style={styles.modalLabel}>Hermes</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={hermesUrl}
+              onChangeText={setHermesUrl}
+              placeholder={AGENT_OS_DEFAULT_HERMES_URL}
+              placeholderTextColor={colors.textMuted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+            />
 
-          <Text style={styles.modalLabel}>CloudRoom</Text>
-          <TextInput
-            style={styles.modalInput}
-            value={cloudroomUrl}
-            onChangeText={setCloudroomUrl}
-            placeholder={CLOUDROOM_DEFAULT_BASE_URL}
-            placeholderTextColor={colors.textMuted}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-          />
+            <Text style={styles.modalLabel}>CloudRoom</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={cloudroomUrl}
+              onChangeText={setCloudroomUrl}
+              placeholder={CLOUDROOM_DEFAULT_BASE_URL}
+              placeholderTextColor={colors.textMuted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+            />
 
-          <Text style={styles.modalLabel}>Omniroute</Text>
-          <TextInput
-            style={styles.modalInput}
-            value={omnirouteUrl}
-            onChangeText={setOmnirouteUrl}
-            placeholder={AGENT_OS_DEFAULT_OMNIROUTE_URL}
-            placeholderTextColor={colors.textMuted}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-          />
+            <Text style={styles.modalLabel}>OpenMuse web</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={openmuseUrl}
+              onChangeText={setOpenmuseUrl}
+              placeholder={OPENMUSE_DEFAULT_WEB_URL}
+              placeholderTextColor={colors.textMuted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+            />
 
-          <View style={styles.modalActions}>
-            <Pressable style={styles.modalResetButton} onPress={onReset}>
-              <Text style={styles.modalResetButtonText}>Reset to Default</Text>
-            </Pressable>
-            <View style={styles.modalRightActions}>
-              <Pressable style={styles.modalCancelButton} onPress={onClose}>
-                <Text style={styles.modalCancelButtonText}>Cancel</Text>
+            <Text style={styles.modalLabel}>OpenMuse API</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={openmuseApiUrl}
+              onChangeText={setOpenmuseApiUrl}
+              placeholder={OPENMUSE_DEFAULT_API_URL}
+              placeholderTextColor={colors.textMuted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+            />
+
+            <Text style={styles.modalLabel}>Omniroute</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={omnirouteUrl}
+              onChangeText={setOmnirouteUrl}
+              placeholder={AGENT_OS_DEFAULT_OMNIROUTE_URL}
+              placeholderTextColor={colors.textMuted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+            />
+
+            <View style={styles.modalActions}>
+              <Pressable style={styles.modalResetButton} onPress={onReset}>
+                <Text style={styles.modalResetButtonText}>Reset to Default</Text>
               </Pressable>
-              <Pressable style={styles.modalSaveButton} onPress={save}>
-                <Text style={styles.modalSaveButtonText}>Save</Text>
-              </Pressable>
+              <View style={styles.modalRightActions}>
+                <Pressable style={styles.modalCancelButton} onPress={onClose}>
+                  <Text style={styles.modalCancelButtonText}>Cancel</Text>
+                </Pressable>
+                <Pressable style={styles.modalSaveButton} onPress={save}>
+                  <Text style={styles.modalSaveButtonText}>Save</Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>
