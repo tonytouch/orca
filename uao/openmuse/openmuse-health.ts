@@ -6,6 +6,7 @@ export type OpenMuseHealth =
 
 export type OpenMuseProbeResponse = {
   ok: boolean
+  status?: number
   json: () => Promise<unknown>
 }
 
@@ -23,7 +24,7 @@ function isOkBody(body: unknown): boolean {
 async function probe(
   fetchImpl: OpenMuseProbe,
   url: string
-): Promise<{ ok: boolean; body: unknown } | { error: string }> {
+): Promise<{ ok: boolean; status: number; body: unknown } | { error: string }> {
   try {
     const response = await fetchImpl(url, { signal: AbortSignal.timeout(PROBE_TIMEOUT_MS) })
     let body: unknown = null
@@ -32,10 +33,14 @@ async function probe(
     } catch {
       body = null
     }
-    return { ok: response.ok, body }
+    return { ok: response.ok, status: response.status ?? (response.ok ? 200 : 0), body }
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'request failed' }
   }
+}
+
+function probeDetail(result: { error: string } | { status: number }): string {
+  return 'error' in result ? result.error : `HTTP ${result.status}`
 }
 
 /** Web URL empty skips the network. The page's API target is baked in as EXPO_PUBLIC_API_URL. */
@@ -59,7 +64,7 @@ export async function checkOpenMuseHealth(input: {
       status: 'unreachable',
       webUrl,
       apiUrl,
-      message: `Unable to reach OpenMuse at ${webUrl}.`
+      message: `Unable to reach OpenMuse at ${webUrl}. ${probeDetail(web)}`
     }
   }
   if (!apiUrl) {

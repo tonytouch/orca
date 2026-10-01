@@ -6,6 +6,7 @@ import {
   CLOUDROOM_DEFAULT_BASE_URL,
   OPENMUSE_DEFAULT_API_URL,
   OPENMUSE_DEFAULT_WEB_URL,
+  OPENMUSE_RETIRED_API_URL,
   parseAgentOsSavedEndpoints
 } from './agent-os-endpoints'
 
@@ -75,6 +76,19 @@ describe('parseAgentOsSavedEndpoints', () => {
     ).toMatchObject({
       openmuseUrl: '',
       openmuseApiUrl: ''
+    })
+  })
+
+  it('moves a saved OpenMuse API on the Hermes port to 8797', () => {
+    expect(OPENMUSE_DEFAULT_API_URL).toBe('http://100.90.167.20:8797')
+    expect(OPENMUSE_RETIRED_API_URL).toBe('http://100.90.167.20:8787')
+    expect(
+      parseAgentOsSavedEndpoints(
+        JSON.stringify({ openmuseApiUrl: 'http://100.90.167.20:8787' })
+      )
+    ).toMatchObject({
+      openmuseApiUrl: 'http://100.90.167.20:8797',
+      hermesUrl: 'http://100.90.167.20:8787'
     })
   })
 

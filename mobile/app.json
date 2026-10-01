@@ -2,7 +2,7 @@
   "expo": {
     "name": "UAO",
     "slug": "uao-mobile",
-    "version": "0.0.51",
+    "version": "1.4.215",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -75,7 +75,7 @@
       "allowBackup": false,
       "permissions": ["RECORD_AUDIO", "MODIFY_AUDIO_SETTINGS"],
       "package": "com.tonytouch.uao",
-      "versionCode": 18
+      "versionCode": 19
     },
     "plugins": [
       "expo-router",
@@ -112,7 +112,8 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "./plugins/android-cleartext-http.js"
     ]
   }
 }

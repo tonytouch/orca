@@ -849,6 +849,16 @@ jobs:
         with:
           native-runtime: node
 
+      # Forks do not inherit upstream tags. Pin only the historical fixtures, not the rolling baseline.
+      - name: Fetch upstream wire compatibility fixtures
+        run: |
+          git fetch --no-tags --filter=blob:none https://github.com/stablyai/orca.git \
+            2307f2ebbe1c1e737c0b12d920bb0a208332db2c:refs/remotes/upstream-releases/v1.4.184 \
+            6e4f817101daa18d82824b69243d9079baa9c416:refs/remotes/upstream-releases/v1.4.190 \
+            28957d6004dd191b6f0baff493a9fd3d37405d9d:refs/remotes/upstream-releases/v1.4.199 \
+            5534462b50c660888487a2108700d4cf284270db:refs/remotes/upstream-releases/v1.4.211 \
+            d937d22f498505c017634be9bf0540c9fa42e665:refs/remotes/upstream-releases/v1.4.212
+
       # A path filter that matches nothing exits 1 ("No test files found"), so this
       # lane cannot report success while running zero tests.
       - name: Old/new client and server compatibility journeys

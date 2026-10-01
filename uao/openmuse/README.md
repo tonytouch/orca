@@ -11,20 +11,20 @@ Endpoints (desktop Endpoints form, and the same fields on the phone). No token f
 | Field | Default | What it is |
 | ----- | ------- | ---------- |
 | OpenMuse web | `http://100.90.167.20:8081` | The page the webview loads |
-| OpenMuse API | `http://100.90.167.20:8787` | Health check only: `GET /api/health` must return `{"ok":true}` |
+| OpenMuse API | `http://100.90.167.20:8797` | Health check only: `GET /api/health` must return `{"ok":true}` |
 
 Clear the web URL to hide the desktop sidebar entry. The phone screen stays in Settings so the URL can be set again.
 
 The running web bundle does not read the API field. It calls `EXPO_PUBLIC_API_URL`, which Expo bakes in when the dev server starts or when `pnpm build:web` runs. The API field has to be that same URL or the banner says the API is down while the page is up.
 
-Hermes on this host is already `http://100.90.167.20:8787`. OpenMuse's own default port is also 8787. If both are running, move OpenMuse to a free port and put that port in `PORT`, `PUBLIC_API_URL`, `EXPO_PUBLIC_API_URL`, and the Endpoints API field.
+Hermes on this host is already `http://100.90.167.20:8787`. OpenMuse's API default is `8797` so the two can run together. Put that port in `PORT`, `PUBLIC_API_URL`, `EXPO_PUBLIC_API_URL`, and the Endpoints API field.
 
 ## Ports on the tailnet
 
 | Port | Who | Reachable from UAO |
 | ---- | --- | ------------------ |
 | 8081 | Expo web, or a static server of `apps/mobile/dist/web` | Yes |
-| OpenMuse `PORT` (8787 unless moved) | Hono API | Yes |
+| OpenMuse `PORT` (8797) | Hono API | Yes |
 | 8790 | Playwright browser worker | No. Stays on the server |
 | Docker computer | Optional Linux box | No |
 
@@ -52,8 +52,8 @@ Bind the API on the tailnet, not on the public internet:
 
 ```bash
 HOST=100.90.167.20
-PORT=8787
-PUBLIC_API_URL=http://100.90.167.20:8787
+PORT=8797
+PUBLIC_API_URL=http://100.90.167.20:8797
 ALLOWED_ORIGINS=http://100.90.167.20:8081
 ```
 
@@ -62,17 +62,17 @@ ALLOWED_ORIGINS=http://100.90.167.20:8081
 Start the API with `pnpm dev`, or `pnpm build:server` then `pnpm start`. Check:
 
 ```bash
-curl -sS http://100.90.167.20:8787/api/health
+curl -sS http://100.90.167.20:8797/api/health
 ```
 
-`{"ok":true}` is the ready state. Change the port in that URL if you moved it off 8787.
+`{"ok":true}` is the ready state. Change the port in that URL if you moved it off 8797.
 
 ### Expo dev server
 
 This is what is already bound on all interfaces at port 8081:
 
 ```bash
-EXPO_PUBLIC_API_URL=http://100.90.167.20:8787 \
+EXPO_PUBLIC_API_URL=http://100.90.167.20:8797 \
   pnpm --dir apps/mobile exec expo start --web --port 8081 --host lan
 ```
 
@@ -81,7 +81,7 @@ EXPO_PUBLIC_API_URL=http://100.90.167.20:8787 \
 ### Production web build
 
 ```bash
-EXPO_PUBLIC_API_URL=http://100.90.167.20:8787 pnpm build:web
+EXPO_PUBLIC_API_URL=http://100.90.167.20:8797 pnpm build:web
 ```
 
 Serve `apps/mobile/dist/web` on port 8081 at the Tailscale address. The baked API URL is fixed until the next export.

@@ -26,9 +26,9 @@ Default URLs (not secrets), overridable in the desktop Endpoints form and on the
 | Omniroute | `http://100.90.167.20:20128` |
 | CloudRoom | `http://100.90.167.20:9840`  |
 | OpenMuse web | `http://100.90.167.20:8081` |
-| OpenMuse API | `http://100.90.167.20:8787` |
+| OpenMuse API | `http://100.90.167.20:8797` |
 
-OpenMuse's API default is the same port as Hermes. Move one of them before both are running. See [`uao/openmuse/README.md`](../openmuse/README.md). An empty OpenMuse web URL hides that sidebar entry. The phone stores both URLs and no OpenMuse token.
+OpenMuse's API is 8797 because Hermes already uses 8787. See [`uao/openmuse/README.md`](../openmuse/README.md). An empty OpenMuse web URL hides that sidebar entry. The phone stores both URLs and no OpenMuse token. The phone does not copy a change made in the desktop Endpoints form; each app has its own saved copy, starting from these defaults.
 
 Tokens are typed at runtime. The desktop app stores them with Electron `safeStorage` under the user-data directory and refuses to write a token when the OS keychain cannot encrypt. They are not in git. The phone keeps the URLs in AsyncStorage and does not store tokens. An empty CloudRoom URL hides that launch target.
 

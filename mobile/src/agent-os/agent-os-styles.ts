@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { colors, radii, spacing } from '../src/theme/mobile-theme'
+import { colors, radii, spacing } from '../theme/mobile-theme'
 
 export const agentOsMobileStyles = StyleSheet.create({
   container: {

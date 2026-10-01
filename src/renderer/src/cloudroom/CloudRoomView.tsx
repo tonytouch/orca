@@ -10,6 +10,7 @@ import {
   type CloudroomHealth,
   type CloudroomSessionSummary
 } from '../../../../uao/cloudroom/cloudroom-types'
+import { translate } from '@/i18n/i18n'
 
 const HARNESS_LABELS: Record<CloudroomHarness, string> = {
   codex: 'Codex',
@@ -124,9 +125,13 @@ export default function CloudRoomView(): React.JSX.Element {
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <div className="flex items-center justify-between border-b border-border px-4 py-2">
-        <h1 className="text-sm font-medium">CloudRoom</h1>
+        <h1 className="text-sm font-medium">
+          {translate('auto.cloudroom.CloudRoomView.42fb502241', 'CloudRoom')}
+        </h1>
         <Button type="button" variant="ghost" onClick={() => setShowSettings((open) => !open)}>
-          {showSettings ? 'Hide endpoints' : 'Endpoints'}
+          {showSettings
+            ? translate('auto.cloudroom.CloudRoomView.70ebc92142', 'Hide endpoints')
+            : translate('auto.cloudroom.CloudRoomView.a863896aac', 'Endpoints')}
         </Button>
       </div>
       {health?.status === 'ready' ? (
@@ -166,22 +171,28 @@ export default function CloudRoomView(): React.JSX.Element {
         <Input
           value={workspace}
           onChange={(event) => setWorkspace(event.target.value)}
-          placeholder="Workspace id (optional)"
+          placeholder={translate(
+            'auto.cloudroom.CloudRoomView.eb246d9047',
+            'Workspace id (optional)'
+          )}
           spellCheck={false}
           disabled={!ready || busy}
         />
         <Textarea
           value={prompt}
           onChange={(event) => setPrompt(event.target.value)}
-          placeholder="First prompt (optional)"
+          placeholder={translate(
+            'auto.cloudroom.CloudRoomView.97c3fc1563',
+            'First prompt (optional)'
+          )}
           disabled={!ready || busy}
         />
         <div className="flex gap-2">
           <Button type="button" disabled={!ready || busy} onClick={() => void start()}>
-            Start
+            {translate('auto.cloudroom.CloudRoomView.03ae36e74e', 'Start')}
           </Button>
           <Button type="button" variant="outline" disabled={busy} onClick={() => void refresh()}>
-            Refresh
+            {translate('auto.cloudroom.CloudRoomView.41eabc65ae', 'Refresh')}
           </Button>
         </div>
         {actionError ? <p className="text-sm text-destructive">{actionError}</p> : null}
@@ -189,7 +200,9 @@ export default function CloudRoomView(): React.JSX.Element {
       <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-2">
         <div className="scrollbar-sleek min-h-0 overflow-auto border-b border-border p-2 md:border-r md:border-b-0">
           {sessions.length === 0 ? (
-            <p className="p-2 text-sm text-muted-foreground">No CloudRoom sessions yet.</p>
+            <p className="p-2 text-sm text-muted-foreground">
+              {translate('auto.cloudroom.CloudRoomView.0152a7c6ac', 'No CloudRoom sessions yet.')}
+            </p>
           ) : (
             sessions.map((session) => (
               <Button
@@ -206,8 +219,12 @@ export default function CloudRoomView(): React.JSX.Element {
         </div>
         <pre className="scrollbar-sleek min-h-40 overflow-auto p-4 font-mono text-sm whitespace-pre-wrap text-foreground">
           {attached
-            ? transcript || 'Waiting for session output…'
-            : 'Attach a session to see its output.'}
+            ? transcript ||
+              translate('auto.cloudroom.CloudRoomView.0e92c228b1', 'Waiting for session output…')
+            : translate(
+                'auto.cloudroom.CloudRoomView.9cf5081475',
+                'Attach a session to see its output.'
+              )}
         </pre>
       </div>
     </div>

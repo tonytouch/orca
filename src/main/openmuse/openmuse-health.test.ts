@@ -26,6 +26,10 @@ describe('checkOpenMuseHealth', () => {
       fetchImpl
     })
     expect(health.status).toBe('unreachable')
+    if (health.status === 'unreachable') {
+      expect(health.message).toContain('http://100.90.167.20:8081')
+      expect(health.message).toContain('offline')
+    }
     expect(fetchImpl).toHaveBeenCalledTimes(1)
   })
 

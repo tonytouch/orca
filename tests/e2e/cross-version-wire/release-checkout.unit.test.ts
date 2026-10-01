@@ -19,6 +19,7 @@ import { spawnProcess } from '../../../src/shared/child-process/run-process'
 import {
   importReleaseCheckoutModule,
   materializeReleaseCheckout,
+  resolveReleaseCommit,
   REPO_ROOT,
   type CheckoutLockOptions,
   type CheckoutStagingContext,
@@ -258,6 +259,51 @@ afterEach(() => {
   for (const root of temporaryRoots.splice(0)) {
     rmSync(root, { recursive: true, force: true })
   }
+})
+
+describe('release ref resolution', () => {
+  it('prefers the repository release over an upstream fixture', () => {
+    const calls: string[][] = []
+    expect(
+      resolveReleaseCommit('v1.4.190', (args) => {
+        calls.push(args)
+        return 'repository-commit'
+      })
+    ).toBe('repository-commit')
+    expect(calls).toEqual([['rev-parse', '--verify', 'v1.4.190^{commit}']])
+  })
+
+  it('resolves a missing historical tag through its upstream fixture', () => {
+    const calls: string[][] = []
+    expect(
+      resolveReleaseCommit('v1.4.190', (args) => {
+        calls.push(args)
+        if (args[2] === 'v1.4.190^{commit}') {
+          throw new Error('missing tag')
+        }
+        return 'upstream-commit'
+      })
+    ).toBe('upstream-commit')
+    expect(calls).toEqual([
+      ['rev-parse', '--verify', 'v1.4.190^{commit}'],
+      ['rev-parse', '--verify', 'refs/remotes/upstream-releases/v1.4.190^{commit}']
+    ])
+  })
+
+  it('fails closed and does not rewrite arbitrary refs', () => {
+    const calls: string[][] = []
+    const missing = (args: string[]): string => {
+      calls.push(args)
+      throw new Error('missing ref')
+    }
+    expect(() => resolveReleaseCommit('HEAD~2', missing)).toThrow('could not resolve ref')
+    expect(calls).toHaveLength(1)
+    calls.length = 0
+    expect(() => resolveReleaseCommit('v1.4.190', missing)).toThrow(
+      'Fetch the required release fixtures'
+    )
+    expect(calls).toHaveLength(2)
+  })
 })
 
 describe('release checkout materialization', () => {

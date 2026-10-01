@@ -3489,7 +3489,8 @@
             "ec2adf093e": "Launch {{value0}} in a new terminal",
             "465e432ef1": "Could not build launch command for {{value0}}.",
             "e518f544b1": "No agents detected",
-            "8dea9b5cdf": "No enabled agents"
+            "8dea9b5cdf": "No enabled agents",
+            "cloudroom": "CloudRoom"
           },
           "RecentTabSwitcher": {
             "329638ff6f": "Switch Tab",
@@ -5483,7 +5484,9 @@
           "d599269755": "Hide from sidebar",
           "artifacts": "Artifacts",
           "skills": "Skills",
-          "agentOs": "Agent OS"
+          "agentOs": "Agent OS",
+          "cloudroom": "CloudRoom",
+          "openmuse": "OpenMuse"
         },
         "SidebarRepositoryFilterSection": {
           "d3a9c4cea1": "Clear",
@@ -17425,6 +17428,65 @@
           "deleteColumn": "Delete column",
           "deleteTable": "Delete table"
         }
+      }
+    },
+    "agent": {
+      "os": {
+        "AgentOsEndpointForm": {
+          "ff7d439110": "Use Tailscale defaults",
+          "ad7a3bde61": "Save",
+          "4b8d88725b": "Also start a local backend on this machine",
+          "a8e3e28ea8": "Enter token",
+          "ddd0a8bcaf": "Saved in the keychain",
+          "dd57eaeac8": "(saved)",
+          "0f336ded38": "Must match EXPO_PUBLIC_API_URL",
+          "523de2d6d4": "OpenMuse API",
+          "596582255f": "Leave empty to hide OpenMuse",
+          "dd192485fb": "OpenMuse web",
+          "b55aec67fc": "Leave empty to hide CloudRoom",
+          "8bc83a331c": "CloudRoom",
+          "cb522269ce": "Omniroute",
+          "5e08d5c069": "Hermes",
+          "254279d709": "Agent OS",
+          "c8f5df1618": "UAO attaches to Agent OS, CloudRoom, and OpenMuse. It does not start those servers. Clear the CloudRoom URL to hide that launch target. Clear the OpenMuse web URL to hide that page.",
+          "60d1cfde4c": "CloudRoom token",
+          "1b3239c29e": "Omniroute token",
+          "3b7a4cd28d": "Hermes token",
+          "204357c484": "Agent OS token"
+        },
+        "AgentOsView": {
+          "9b73425010": "Retry Connection",
+          "c65b727eb3": "local",
+          "target": "Target: {{url}} (mode: {{mode}})",
+          "86b7d3404c": "Unable to reach the Agent OS backend at {{value0}}.",
+          "8325fc6cc0": "Agent OS Backend Unavailable",
+          "58bf5f3a7e": "Endpoints",
+          "30684e3f5b": "Hide endpoints"
+        }
+      }
+    },
+    "cloudroom": {
+      "CloudRoomView": {
+        "9cf5081475": "Attach a session to see its output.",
+        "0e92c228b1": "Waiting for session output…",
+        "0152a7c6ac": "No CloudRoom sessions yet.",
+        "41eabc65ae": "Refresh",
+        "03ae36e74e": "Start",
+        "97c3fc1563": "First prompt (optional)",
+        "eb246d9047": "Workspace id (optional)",
+        "a863896aac": "Endpoints",
+        "70ebc92142": "Hide endpoints",
+        "42fb502241": "CloudRoom"
+      }
+    },
+    "openmuse": {
+      "OpenMuseView": {
+        "70552f6357": "Retry connection",
+        "6d9941f5d7": "OpenMuse is unreachable",
+        "e23303b8fc": "Retry",
+        "d09ebf2854": "Endpoints",
+        "f73e28c747": "Hide endpoints",
+        "7d1f741fbb": "OpenMuse"
       }
     }
   },

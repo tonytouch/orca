@@ -6,8 +6,10 @@ export const AGENT_OS_DEFAULT_OMNIROUTE_URL = 'http://100.90.167.20:20128'
 export const CLOUDROOM_DEFAULT_BASE_URL = 'http://100.90.167.20:9840'
 /** Expo web, bound on all interfaces. The page does not read this from UAO at runtime. */
 export const OPENMUSE_DEFAULT_WEB_URL = 'http://100.90.167.20:8081'
-/** OpenMuse's own API port. Hermes on this host already uses 8787, so one of them must move. */
-export const OPENMUSE_DEFAULT_API_URL = 'http://100.90.167.20:8787'
+/** OpenMuse API. Hermes already listens on 8787 on this host. */
+export const OPENMUSE_DEFAULT_API_URL = 'http://100.90.167.20:8797'
+/** Earlier builds stored the Hermes port as the OpenMuse API. */
+export const OPENMUSE_RETIRED_API_URL = 'http://100.90.167.20:8787'
 
 export const UAO_ENDPOINTS_SAVED_EVENT = 'uao-endpoints-saved'
 
@@ -72,6 +74,14 @@ export function resolveCloudroomUrl(incoming: string | undefined, previous: stri
   return resolveOptionalHttpUrl(incoming, previous)
 }
 
+export function migrateOpenMuseApiUrl(url: string): string {
+  return url === OPENMUSE_RETIRED_API_URL ? OPENMUSE_DEFAULT_API_URL : url
+}
+
+export function resolveOpenMuseApiUrl(incoming: string | undefined, previous: string): string {
+  return migrateOpenMuseApiUrl(resolveOptionalHttpUrl(incoming, previous))
+}
+
 export function normalizeAgentOsHttpUrl(value: string, fallback: string): string {
   const trimmed = value.trim().replace(/\/$/, '')
   if (!trimmed) {
@@ -123,10 +133,8 @@ export function parseAgentOsSavedEndpoints(raw: string | null): AgentOsSavedEndp
         omnirouteUrl: savedUrlField(parsed, 'omnirouteUrl', AGENT_OS_DEFAULT_OMNIROUTE_URL),
         cloudroomUrl: cloudroomUrlFromStored(parsed),
         openmuseUrl: optionalHttpUrlFromStored(parsed, 'openmuseUrl', OPENMUSE_DEFAULT_WEB_URL),
-        openmuseApiUrl: optionalHttpUrlFromStored(
-          parsed,
-          'openmuseApiUrl',
-          OPENMUSE_DEFAULT_API_URL
+        openmuseApiUrl: migrateOpenMuseApiUrl(
+          optionalHttpUrlFromStored(parsed, 'openmuseApiUrl', OPENMUSE_DEFAULT_API_URL)
         )
       }
     } catch {
