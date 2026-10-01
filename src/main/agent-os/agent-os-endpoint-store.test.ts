@@ -16,7 +16,7 @@ function memorySecrets(available = true): SecretStore {
   return {
     isEncryptionAvailable: () => available,
     encryptString: (plain) => {
-      const token = `enc:${plain}`
+      const token = Buffer.from(plain).toString('base64url')
       box.set(token, plain)
       return Buffer.from(token)
     },

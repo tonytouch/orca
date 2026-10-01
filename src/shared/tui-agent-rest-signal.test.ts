@@ -30,6 +30,8 @@ const EXPECTED_REST_SIGNALS: Record<TuiAgent, TuiAgentRestSignal> = {
   muse: 'ready-body',
   qoder: 'ready-body',
   codebuddy: 'none',
+  kimchi: 'none',
+  mavis: 'none',
   autohand: 'none',
   ante: 'none',
   trae: 'none',
