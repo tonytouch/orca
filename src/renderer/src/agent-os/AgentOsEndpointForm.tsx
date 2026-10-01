@@ -15,25 +15,6 @@ type AgentOsEndpointFormProps = {
   onSaved: (config: AgentOsPublicConfig) => void
 }
 
-const TOKEN_FIELDS: { service: AgentOsTokenService; label: string }[] = [
-  {
-    service: 'agent-os',
-    label: translate('auto.agent.os.AgentOsEndpointForm.204357c484', 'Agent OS token')
-  },
-  {
-    service: 'hermes',
-    label: translate('auto.agent.os.AgentOsEndpointForm.3b7a4cd28d', 'Hermes token')
-  },
-  {
-    service: 'omniroute',
-    label: translate('auto.agent.os.AgentOsEndpointForm.1b3239c29e', 'Omniroute token')
-  },
-  {
-    service: 'cloudroom',
-    label: translate('auto.agent.os.AgentOsEndpointForm.60d1cfde4c', 'CloudRoom token')
-  }
-]
-
 const EMPTY_TOKENS: Record<AgentOsTokenService, string> = {
   'agent-os': '',
   hermes: '',
@@ -48,12 +29,30 @@ export function AgentOsEndpointForm({
   const [draft, setDraft] = useState<AgentOsEndpointConfig>(config)
   const [tokens, setTokens] = useState<Record<AgentOsTokenService, string>>(EMPTY_TOKENS)
   const [message, setMessage] = useState<string | null>(null)
+  const tokenFields: { service: AgentOsTokenService; label: string }[] = [
+    {
+      service: 'agent-os',
+      label: translate('auto.agent.os.AgentOsEndpointForm.204357c484', 'Agent OS token')
+    },
+    {
+      service: 'hermes',
+      label: translate('auto.agent.os.AgentOsEndpointForm.3b7a4cd28d', 'Hermes token')
+    },
+    {
+      service: 'omniroute',
+      label: translate('auto.agent.os.AgentOsEndpointForm.1b3239c29e', 'Omniroute token')
+    },
+    {
+      service: 'cloudroom',
+      label: translate('auto.agent.os.AgentOsEndpointForm.60d1cfde4c', 'CloudRoom token')
+    }
+  ]
 
   const save = async (): Promise<void> => {
     setMessage(null)
     const next = await window.api.agentOs.setConfig(draft)
     window.dispatchEvent(new Event(UAO_ENDPOINTS_SAVED_EVENT))
-    for (const field of TOKEN_FIELDS) {
+    for (const field of tokenFields) {
       const value = tokens[field.service].trim()
       if (!value) {
         continue
@@ -144,7 +143,7 @@ export function AgentOsEndpointForm({
           )}
         />
       </label>
-      {TOKEN_FIELDS.map((field) => (
+      {tokenFields.map((field) => (
         <label key={field.service} className="flex flex-col gap-1 text-sm">
           {field.label}{' '}
           {config.tokens[field.service]
