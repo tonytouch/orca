@@ -5,8 +5,10 @@ import {
   CLOUDROOM_DEFAULT_BASE_URL,
   OPENMUSE_DEFAULT_API_URL,
   OPENMUSE_DEFAULT_WEB_URL,
+  migrateOpenMuseApiUrl,
   normalizeAgentOsHttpUrl,
   optionalHttpUrlFromStored,
+  resolveOpenMuseApiUrl,
   resolveOptionalHttpUrl,
   type AgentOsEndpointConfig,
   type AgentOsPublicConfig,
@@ -49,7 +51,9 @@ export function readAgentOsEndpoints(directory: string): AgentOsEndpointConfig {
     ),
     cloudroomUrl: optionalHttpUrlFromStored(stored, 'cloudroomUrl', CLOUDROOM_DEFAULT_BASE_URL),
     openmuseUrl: optionalHttpUrlFromStored(stored, 'openmuseUrl', OPENMUSE_DEFAULT_WEB_URL),
-    openmuseApiUrl: optionalHttpUrlFromStored(stored, 'openmuseApiUrl', OPENMUSE_DEFAULT_API_URL),
+    openmuseApiUrl: migrateOpenMuseApiUrl(
+      optionalHttpUrlFromStored(stored, 'openmuseApiUrl', OPENMUSE_DEFAULT_API_URL)
+    ),
     localSupervisor: stored.localSupervisor === true
   }
 }
@@ -65,7 +69,7 @@ export function writeAgentOsEndpoints(
     omnirouteUrl: normalizeAgentOsHttpUrl(config.omnirouteUrl, next.omnirouteUrl),
     cloudroomUrl: resolveOptionalHttpUrl(config.cloudroomUrl, next.cloudroomUrl),
     openmuseUrl: resolveOptionalHttpUrl(config.openmuseUrl, next.openmuseUrl),
-    openmuseApiUrl: resolveOptionalHttpUrl(config.openmuseApiUrl, next.openmuseApiUrl),
+    openmuseApiUrl: resolveOpenMuseApiUrl(config.openmuseApiUrl, next.openmuseApiUrl),
     localSupervisor: config.localSupervisor === true
   }
   mkdirSync(directory, { recursive: true })

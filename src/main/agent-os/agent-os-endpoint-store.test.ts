@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -79,6 +79,16 @@ describe('agent os endpoint store', () => {
       openmuseUrl: 'not a url'
     })
     expect(keptWeb.openmuseUrl).toBe('')
+  })
+
+  it('rewrites a saved OpenMuse API that still points at the Hermes port', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'uao-agent-os-'))
+    writeFileSync(
+      join(directory, 'agent-os-endpoints.json'),
+      JSON.stringify({ openmuseApiUrl: 'http://100.90.167.20:8787' })
+    )
+    expect(readAgentOsEndpoints(directory).openmuseApiUrl).toBe('http://100.90.167.20:8797')
+    expect(readAgentOsEndpoints(directory).hermesUrl).toBe('http://100.90.167.20:8787')
   })
 
   it('stores the CloudRoom token only as ciphertext', () => {

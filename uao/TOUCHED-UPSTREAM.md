@@ -104,7 +104,7 @@ These existing files are patched:
 | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `config/tsconfig.node.json`                                                                                          | Typecheck includes `uao/openmuse/**`.                                                        |
 | `config/tsconfig.web.json`, `config/tsconfig.tc.web.json`                                                            | Renderer and preload may import the health and permission modules.                           |
-| `src/shared/agent-os-endpoints.ts`, `src/shared/agent-os-endpoints.test.ts`                                          | OpenMuse web (`:8081`) and API (`:8787`) URLs, with the same empty-URL hide as CloudRoom.    |
+| `src/shared/agent-os-endpoints.ts`, `src/shared/agent-os-endpoints.test.ts`                                          | OpenMuse web (`:8081`) and API (`:8797`) URLs, with the same empty-URL hide as CloudRoom.    |
 | `src/main/agent-os/agent-os-endpoint-store.ts`, `src/main/agent-os/agent-os-endpoint-store.test.ts`                  | Persist both URLs. No OpenMuse token.                                                        |
 | `src/main/startup/main-process-ipc-bootstrap.ts`                                                                     | Registers OpenMuse health IPC and the guest permission handler.                              |
 | `src/preload/api-types.ts`, `src/preload/index.ts`                                                                   | Expose `window.api.openmuse`.                                                                |

@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
-import { WebView } from 'react-native-webview'
-import { AlertCircle, ArrowLeft, Globe, RefreshCw, Sparkles } from 'lucide-react-native'
+import { ArrowLeft, Globe, RefreshCw, Sparkles } from 'lucide-react-native'
 import { colors } from '../src/theme/mobile-theme'
 import { checkOpenMuseHealth, type OpenMuseHealth } from '../../uao/openmuse/openmuse-health'
 import {
@@ -12,6 +11,7 @@ import {
   saveAgentOsEndpoints,
   type AgentOsSavedEndpoints
 } from '../src/agent-os/agent-os-saved-endpoints'
+import { RemoteHttpErrorView, RemoteHttpWebView } from '../src/agent-os/remote-http-webview'
 import { AgentOsEndpointModal } from './agent-os-endpoint-modal'
 import { agentOsMobileStyles as styles } from './agent-os-styles'
 
@@ -20,12 +20,11 @@ export default function OpenMuseMobileScreen() {
   const insets = useSafeAreaInsets()
   const [endpoints, setEndpoints] = useState<AgentOsSavedEndpoints>(defaultAgentOsEndpoints())
   const [health, setHealth] = useState<OpenMuseHealth | null>(null)
-  const [loadError, setLoadError] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [reloadKey, setReloadKey] = useState(0)
 
   const refresh = useCallback(async (next: AgentOsSavedEndpoints) => {
-    setLoadError(null)
+    setHealth(null)
     const result = await checkOpenMuseHealth({
       webUrl: next.openmuseUrl,
       apiUrl: next.openmuseApiUrl
@@ -35,14 +34,22 @@ export default function OpenMuseMobileScreen() {
 
   useEffect(() => {
     let mounted = true
-    void loadAgentOsSavedEndpoints().then((saved) => {
-      if (!mounted) {
-        return
-      }
-      const next = saved ?? defaultAgentOsEndpoints()
-      setEndpoints(next)
-      void refresh(next)
-    })
+    void loadAgentOsSavedEndpoints()
+      .then((saved) => {
+        if (!mounted) {
+          return
+        }
+        const next = saved ?? defaultAgentOsEndpoints()
+        setEndpoints(next)
+        return refresh(next)
+      })
+      .catch((error: unknown) => {
+        if (!mounted) {
+          return
+        }
+        const message = error instanceof Error ? error.message : 'Could not read saved endpoints.'
+        setHealth({ status: 'unreachable', message, webUrl: '', apiUrl: '' })
+      })
     return () => {
       mounted = false
     }
@@ -50,7 +57,7 @@ export default function OpenMuseMobileScreen() {
 
   const webUrl = endpoints.openmuseUrl.trim()
   const embed = health?.status === 'ready' || health?.status === 'degraded'
-  const banner = loadError ?? health?.message ?? 'Checking OpenMuse…'
+  const banner = health?.message ?? 'Checking OpenMuse…'
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
@@ -90,56 +97,38 @@ export default function OpenMuseMobileScreen() {
           </Pressable>
         </View>
       </View>
-      {health && health.status !== 'ready' ? (
+      {health && health.status === 'degraded' ? (
         <View style={styles.headerBar}>
           <Text style={styles.subtitleText}>{banner}</Text>
         </View>
       ) : null}
       <View style={styles.contentArea}>
         {!webUrl || health?.status === 'unconfigured' ? (
-          <View style={styles.errorContainer}>
-            <AlertCircle size={44} color={colors.statusRed} />
-            <Text style={styles.errorTitle}>OpenMuse URL is not set</Text>
-            <Text style={styles.errorMessage}>
-              Set the OpenMuse web URL in endpoints. UAO does not start the server.
-            </Text>
-            <Pressable style={styles.retryButton} onPress={() => setSettingsOpen(true)}>
-              <Text style={styles.retryButtonText}>Set endpoints</Text>
-            </Pressable>
-          </View>
-        ) : loadError || health?.status === 'unreachable' ? (
-          <View style={styles.errorContainer}>
-            <AlertCircle size={44} color={colors.statusRed} />
-            <Text style={styles.errorTitle}>Cannot reach OpenMuse</Text>
-            <Text style={styles.errorMessage}>{banner}</Text>
-            <Pressable
-              style={styles.retryButton}
-              onPress={() => setReloadKey((value) => value + 1)}
-            >
-              <RefreshCw size={16} color={colors.onAccent} />
-              <Text style={styles.retryButtonText}>Retry connection</Text>
-            </Pressable>
-          </View>
+          <RemoteHttpErrorView
+            title="OpenMuse URL is not set"
+            message="Set the OpenMuse web URL on this phone. UAO does not start the server, and the desktop app keeps a separate copy."
+            url={webUrl}
+            onChangeEndpoint={() => setSettingsOpen(true)}
+          />
+        ) : health?.status === 'unreachable' ? (
+          <RemoteHttpErrorView
+            title="Cannot reach OpenMuse"
+            message={banner}
+            url={health.webUrl || webUrl}
+            onRetry={() => setReloadKey((value) => value + 1)}
+            onChangeEndpoint={() => setSettingsOpen(true)}
+          />
         ) : embed && webUrl ? (
-          <WebView
+          <RemoteHttpWebView
             key={reloadKey}
-            source={{ uri: webUrl }}
-            style={styles.webView}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            startInLoadingState={true}
-            renderLoading={() => (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={colors.accentBlue} />
-              </View>
-            )}
-            onError={(event) => {
-              setLoadError(event.nativeEvent.description || 'Network request failed')
-            }}
+            url={webUrl}
+            title="Cannot load OpenMuse"
+            onChangeEndpoint={() => setSettingsOpen(true)}
           />
         ) : (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={colors.accentBlue} />
+            <Text style={styles.loadingText}>{banner}</Text>
           </View>
         )}
       </View>

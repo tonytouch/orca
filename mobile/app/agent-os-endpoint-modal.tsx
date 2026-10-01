@@ -9,6 +9,7 @@ import {
   OPENMUSE_DEFAULT_API_URL,
   OPENMUSE_DEFAULT_WEB_URL,
   normalizeAgentOsHttpUrl,
+  resolveOpenMuseApiUrl,
   resolveOptionalHttpUrl,
   type AgentOsSavedEndpoints
 } from '../../src/shared/agent-os-endpoints'
@@ -55,7 +56,7 @@ export function AgentOsEndpointModal({
       omnirouteUrl: normalizeAgentOsHttpUrl(omnirouteUrl, AGENT_OS_DEFAULT_OMNIROUTE_URL),
       cloudroomUrl: resolveOptionalHttpUrl(cloudroomUrl, initial.cloudroomUrl),
       openmuseUrl: resolveOptionalHttpUrl(openmuseUrl, initial.openmuseUrl),
-      openmuseApiUrl: resolveOptionalHttpUrl(openmuseApiUrl, initial.openmuseApiUrl)
+      openmuseApiUrl: resolveOpenMuseApiUrl(openmuseApiUrl, initial.openmuseApiUrl)
     })
   }
 
@@ -66,9 +67,9 @@ export function AgentOsEndpointModal({
           <ScrollView keyboardShouldPersistTaps="handled">
             <Text style={styles.modalTitle}>Configure Agent OS Endpoints</Text>
             <Text style={styles.modalSubtitle}>
-              Agent OS, Hermes, Omniroute, CloudRoom, and OpenMuse on the Tailscale host. Tokens
-              stay on the desktop app. Leave CloudRoom or the OpenMuse web URL empty to hide that
-              page.
+              Saved on this phone. The desktop app keeps its own copy and does not sync these
+              addresses. Tokens stay on the desktop. Leave CloudRoom or the OpenMuse web URL empty
+              to hide that page.
             </Text>
 
             <Text style={styles.modalLabel}>Agent OS</Text>
