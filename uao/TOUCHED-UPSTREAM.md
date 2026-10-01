@@ -79,6 +79,7 @@ These existing files are patched:
 | File                                                                                                                 | Why                                                                  |
 | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `config/tsconfig.node.json`                                                                                          | Typecheck includes `uao/cloudroom/**`.                               |
+| `config/tsconfig.web.json`, `config/tsconfig.tc.web.json`                                                            | Renderer and preload may import `uao/cloudroom/cloudroom-types.ts`.  |
 | `src/shared/agent-os-endpoints.ts`, `src/shared/agent-os-endpoints.test.ts`                                          | CloudRoom URL default (`:9840`), empty-URL hide, token service name. |
 | `src/main/agent-os/agent-os-endpoint-store.ts`, `src/main/agent-os/agent-os-endpoint-store.test.ts`                  | Persist the URL and the keychain token next to the Agent OS tokens.  |
 | `src/main/startup/main-process-ipc-bootstrap.ts`                                                                     | Registers CloudRoom IPC.                                             |

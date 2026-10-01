@@ -96,7 +96,9 @@ describe('cloudroom client', () => {
     const events = await client.events('cr_demo', 0)
     expect(events).toEqual([{ sequence: 2, kind: 'text_delta', text: 'Hello' }])
 
-    const listCall = calls.find((call) => call.url.endsWith('/v1/sessions') && !call.init?.method)
+    const listCall = calls.find(
+      (call) => call.url.endsWith('/v1/sessions') && call.init?.method !== 'POST'
+    )
     const headers = listCall?.init?.headers
     expect(headers).toMatchObject({ authorization: 'Bearer s3cret' })
     const createCall = calls.find((call) => call.init?.method === 'POST')
