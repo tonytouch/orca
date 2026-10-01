@@ -28,10 +28,12 @@ module.exports = {
     hardenedRuntime: false,
     notarize: false,
     identity: null,
+    // Why: an arch list here is built in full when the CLI says `--mac` without a target name, so `--arm64` does not drop x64.
+    // macos-latest only has arm64 natives installed.
     target: [
       {
         target: 'dmg',
-        arch: ['x64', 'arm64']
+        arch: ['arm64']
       }
     ]
   },
