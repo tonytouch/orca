@@ -10,6 +10,7 @@ import {
 } from '../../../shared/agent-os-endpoints'
 import type { OpenMuseHealth } from '../../../../uao/openmuse/openmuse-health'
 import { OPENMUSE_PARTITION } from '../../../../uao/openmuse/openmuse-permission'
+import { translate } from '@/i18n/i18n'
 
 function attachOpenMuseWebview(
   container: HTMLDivElement,
@@ -106,9 +107,13 @@ export default function OpenMuseView(): React.JSX.Element {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
       <div className="flex items-center justify-between border-b border-border px-4 py-2">
-        <h1 className="text-sm font-medium">OpenMuse</h1>
+        <h1 className="text-sm font-medium">
+          {translate('auto.openmuse.OpenMuseView.7d1f741fbb', 'OpenMuse')}
+        </h1>
         <Button type="button" variant="ghost" onClick={() => setShowSettings((open) => !open)}>
-          {showSettings ? 'Hide endpoints' : 'Endpoints'}
+          {showSettings
+            ? translate('auto.openmuse.OpenMuseView.f73e28c747', 'Hide endpoints')
+            : translate('auto.openmuse.OpenMuseView.d09ebf2854', 'Endpoints')}
         </Button>
       </div>
       {health?.status === 'ready' && !embedError ? (
@@ -121,7 +126,7 @@ export default function OpenMuseView(): React.JSX.Element {
           <span>{banner}</span>
           <Button type="button" variant="outline" onClick={retry}>
             <RefreshCw />
-            Retry
+            {translate('auto.openmuse.OpenMuseView.e23303b8fc', 'Retry')}
           </Button>
         </div>
       ) : null}
@@ -142,11 +147,13 @@ export default function OpenMuseView(): React.JSX.Element {
       {failed ? (
         <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
           <AlertCircle className="size-12 text-destructive" />
-          <h2 className="text-xl font-semibold">OpenMuse is unreachable</h2>
+          <h2 className="text-xl font-semibold">
+            {translate('auto.openmuse.OpenMuseView.6d9941f5d7', 'OpenMuse is unreachable')}
+          </h2>
           <p className="max-w-md text-sm text-muted-foreground">{banner}</p>
           <Button type="button" onClick={retry}>
             <RefreshCw />
-            Retry connection
+            {translate('auto.openmuse.OpenMuseView.70552f6357', 'Retry connection')}
           </Button>
         </div>
       ) : (

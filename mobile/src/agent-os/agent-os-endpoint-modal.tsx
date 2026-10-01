@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
-import { colors } from '../src/theme/mobile-theme'
+import { colors } from '../theme/mobile-theme'
 import {
   AGENT_OS_DEFAULT_BASE_URL,
   AGENT_OS_DEFAULT_HERMES_URL,
@@ -12,7 +12,7 @@ import {
   resolveOpenMuseApiUrl,
   resolveOptionalHttpUrl,
   type AgentOsSavedEndpoints
-} from '../../src/shared/agent-os-endpoints'
+} from '../../../src/shared/agent-os-endpoints'
 import { agentOsMobileStyles as styles } from './agent-os-styles'
 
 type AgentOsEndpointModalProps = {

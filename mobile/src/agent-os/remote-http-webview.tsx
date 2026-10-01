@@ -3,7 +3,7 @@ import { Pressable, Text, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { AlertCircle, Globe, RefreshCw } from 'lucide-react-native'
 import { colors } from '../theme/mobile-theme'
-import { agentOsMobileStyles as styles } from '../../app/agent-os-styles'
+import { agentOsMobileStyles as styles } from './agent-os-styles'
 import { describeProbeFailure, mainFrameHttpStatusFailure } from './remote-http-load'
 
 const PROBE_TIMEOUT_MS = 12_000

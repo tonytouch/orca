@@ -24,8 +24,8 @@ import {
   RemoteHttpWebView,
   type RemoteHttpWebViewHandle
 } from '../src/agent-os/remote-http-webview'
-import { AgentOsEndpointModal } from './agent-os-endpoint-modal'
-import { agentOsMobileStyles as styles } from './agent-os-styles'
+import { AgentOsEndpointModal } from '../src/agent-os/agent-os-endpoint-modal'
+import { agentOsMobileStyles as styles } from '../src/agent-os/agent-os-styles'
 
 export default function AgentOsMobileScreen() {
   const router = useRouter()

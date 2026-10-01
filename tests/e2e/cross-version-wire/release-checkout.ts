@@ -145,15 +145,24 @@ export function selectLatestStableReleaseTag(tags: string[]): string | null {
   )
 }
 
-function resolveCommit(ref: string): string {
-  try {
-    return git(['rev-parse', `${ref}^{commit}`])
-  } catch (error) {
-    throw new Error(
-      `Cross-version harness could not resolve ref "${ref}" to a commit: ${String(error)}. ` +
-        'The ref must exist locally; a shallow CI clone needs `fetch-depth: 0`.'
-    )
+export function resolveReleaseCommit(ref: string, runGit = git): string {
+  const candidates = [ref]
+  if (STABLE_DESKTOP_RELEASE_TAG.test(ref)) {
+    // Forks keep upstream release fixtures separate from their own release tags.
+    candidates.push(`refs/remotes/upstream-releases/${ref}`)
   }
+  let failure: unknown
+  for (const candidate of candidates) {
+    try {
+      return runGit(['rev-parse', '--verify', `${candidate}^{commit}`])
+    } catch (error) {
+      failure = error
+    }
+  }
+  throw new Error(
+    `Cross-version harness could not resolve ref "${ref}" to a commit: ${String(failure)}. ` +
+      'Fetch the required release fixtures; a shallow CI clone needs `fetch-depth: 0`.'
+  )
 }
 
 type CheckoutStamp = { commit: string; format: number }
@@ -245,7 +254,7 @@ export async function materializeReleaseCheckout(
   ref: string,
   options: MaterializeReleaseCheckoutOptions = {}
 ): Promise<ReleaseCheckout> {
-  const commit = resolveCommit(ref)
+  const commit = resolveReleaseCommit(ref)
   const label = ref.replace(/[^A-Za-z0-9._-]/g, '_')
   const cacheRoot = options.cacheRoot ?? DEFAULT_CACHE_ROOT
   const root = join(cacheRoot, label, `${commit}-format-${CHECKOUT_FORMAT}`)
