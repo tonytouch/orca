@@ -3,6 +3,9 @@ import { recoverLegacyWorkerTerminalsForRendererStartup } from './legacy-worker-
 import { logStartupMilestone } from './startup-diagnostics'
 import { mainProcessState as state } from './main-process-state'
 import { resolveOpenedMarkdownDocuments } from './os-opened-markdown-files'
+import { getAgentOsMainService } from '../agent-os/agent-os-main-service'
+import { getCloudroomMainService } from '../cloudroom/cloudroom-main-service'
+import { getOpenMuseMainService } from '../openmuse/openmuse-main-service'
 
 export function registerMainProcessIpcHandlers(): void {
   ipcMain.handle('app:awaitFirstWindowStartupServices', async () => {
@@ -67,4 +70,7 @@ export function registerMainProcessIpcHandlers(): void {
       logStartupMilestone(event, details && typeof details === 'object' ? details : {})
     }
   )
+  getAgentOsMainService().registerIpcHandlers()
+  getCloudroomMainService().registerIpcHandlers()
+  getOpenMuseMainService().registerIpcHandlers()
 }

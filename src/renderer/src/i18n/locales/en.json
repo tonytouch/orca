@@ -219,8 +219,8 @@
   "menu": {
     "checkForUpdates": "Check for Updates...",
     "settings": "Settings",
-    "exploreOrca": "Explore Orca",
-    "gettingStarted": "Getting Started with Orca",
+    "exploreOrca": "Explore UAO",
+    "gettingStarted": "Getting Started with UAO",
     "reportCrash": "Report Crash...",
     "file": "File",
     "exit": "Exit",
@@ -231,7 +231,7 @@
     "showStatusBar": "Show Status Bar",
     "showTasksButton": "Show Tasks Button",
     "showAutomationsButton": "Show Automations Button",
-    "showMobileButton": "Show Orca Mobile Button",
+    "showMobileButton": "Show UAO Mobile Button",
     "showTitlebarAppName": "Show Titlebar App Name",
     "view": "View",
     "reload": "Reload",
@@ -247,12 +247,12 @@
     "selectAll": "Select All"
   },
   "tray": {
-    "openOrca": "Open Orca",
+    "openOrca": "Open UAO",
     "quit": "Quit",
     "minimizeNotice": {
-      "body": "Orca is still running in the system tray"
+      "body": "UAO is still running in the system tray"
     },
-    "activityWaiting": "Orca - activity waiting",
+    "activityWaiting": "UAO - activity waiting",
     "activityWaitingSuffix": "activity waiting"
   },
   "worktreeJumpPalette": {
@@ -623,7 +623,9 @@
           "d443a47995": "Prime Agent",
           "mimo_code_label": "MiMo Code",
           "opencode2_label": "OpenCode 2",
-          "codebuddy_label": "CodeBuddy"
+          "codebuddy_label": "CodeBuddy",
+          "kimchi": "Kimchi",
+          "mavis": "Mavis"
         },
         "skill": {
           "cli": {
@@ -5480,7 +5482,8 @@
           "fee535205b": "Tasks",
           "d599269755": "Hide from sidebar",
           "artifacts": "Artifacts",
-          "skills": "Skills"
+          "skills": "Skills",
+          "agentOs": "Agent OS"
         },
         "SidebarRepositoryFilterSection": {
           "d3a9c4cea1": "Clear",

@@ -24,6 +24,9 @@ const SkillsPage = lazy(() => import('../components/skills/SkillsPage'))
 const ArtifactsPage = lazy(() => import('../components/artifacts/ArtifactsPage'))
 const WorkspaceSpacePage = lazy(() => import('../components/workspace-space/WorkspaceSpacePage'))
 const MobilePage = lazy(() => import('../components/mobile/MobilePage'))
+const AgentOsView = lazy(() => import('../agent-os/AgentOsView'))
+const CloudRoomView = lazy(() => import('../cloudroom/CloudRoomView'))
+const OpenMuseView = lazy(() => import('../openmuse/OpenMuseView'))
 const Terminal = lazy(() => import('../components/Terminal'))
 
 type WorktreeSidebarScrollRefs = {
@@ -76,6 +79,9 @@ function ActivePage({ layout }: { layout: AppChromeLayout }): React.JSX.Element 
       {activeView === 'activity' ? <ActivityPrototypePage /> : null}
       {activeView === 'space' ? <WorkspaceSpacePage /> : null}
       {activeView === 'mobile' ? <MobilePage /> : null}
+      {activeView === 'agent-os' ? <AgentOsView /> : null}
+      {activeView === 'cloudroom' ? <CloudRoomView /> : null}
+      {activeView === 'openmuse' ? <OpenMuseView /> : null}
       {activeView === 'terminal' && creationLayoutActive && activePendingCreationId ? (
         <WorktreeCreationPanel
           creationId={activePendingCreationId}

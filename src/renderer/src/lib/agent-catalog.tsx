@@ -16,6 +16,7 @@ import {
 import { translate } from '@/i18n/i18n'
 import { createLocalizedCatalog } from '@/i18n/localized-catalog'
 import { AGENT_FAVICON_ASSETS } from './agent-favicon-assets'
+import { agentOsCatalogEntries } from './agent-os-catalog-entries'
 
 export type AgentCatalogEntry = {
   id: TuiAgent
@@ -343,7 +344,8 @@ export const getAgentCatalog = createLocalizedCatalog((): AgentCatalogEntry[] =>
     cmd: 'codebuddy',
     faviconDomain: 'codebuddy.ai',
     homepageUrl: 'https://www.codebuddy.ai/cli'
-  }
+  },
+  ...agentOsCatalogEntries()
 ])
 
 // Why: tests and a few legacy call sites still import a catalog snapshot.

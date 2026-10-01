@@ -18,6 +18,7 @@ import { createUpdaterDiagnosticLogger } from '../linux-package-install-diagnost
 import { registerAutoUpdaterHandlers } from '../updater-events'
 import { getServeUpdateHandoffFailure } from '../serve-update-handoff'
 import { recordUpdaterLifecycle } from '../updater-lifecycle-diagnostics'
+import { activeLatestDownloadUrl } from '../uao-runtime'
 import { AUTO_UPDATE_CHECK_INTERVAL_MS } from './updater-state'
 import { UpdaterDownloadInstall } from './updater-download-install'
 import type { PreQuitCleanupFailureMode, UpdateInstallMode } from './updater-state'
@@ -141,6 +142,10 @@ export class UpdaterSetup extends UpdaterDownloadInstall {
     if (is.dev) {
       return
     }
+    // Why: UAO_DISABLE_AUTO_UPDATE=1 skips electron-updater entirely. Unset, UAO still checks tonytouch/orca.
+    if (process.env.UAO_DISABLE_AUTO_UPDATE === '1') {
+      return
+    }
 
     const autoUpdater = this.getAutoUpdater()
     autoUpdater.autoDownload = false
@@ -161,7 +166,7 @@ export class UpdaterSetup extends UpdaterDownloadInstall {
     if (this.activeUpdateSource === 'release') {
       autoUpdater.setFeedURL({
         provider: 'generic',
-        url: 'https://github.com/stablyai/orca/releases/latest/download'
+        url: activeLatestDownloadUrl()
       })
     }
     if (this.autoUpdaterInitialized) {

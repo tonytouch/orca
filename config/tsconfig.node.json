@@ -14,7 +14,10 @@
     "../src/preload/**/*",
     "../src/shared/**/*",
     "../src/relay/**/*",
-    "../src/types/**/*"
+    "../src/types/**/*",
+    "../agent-os/**/*",
+    "../uao/cloudroom/**/*",
+    "../uao/openmuse/**/*"
   ],
   "compilerOptions": {
     "composite": true,

@@ -1,5 +1,15 @@
 import React from 'react'
-import { BookOpen, CalendarClock, EyeOff, Files, Search, Smartphone } from 'lucide-react'
+import {
+  BookOpen,
+  CalendarClock,
+  Cloud,
+  Cpu,
+  Sparkles,
+  EyeOff,
+  Files,
+  Search,
+  Smartphone
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/store'
 import { cn } from '@/lib/utils'
@@ -14,6 +24,8 @@ import { SidebarTaskNavButton } from './SidebarTaskNavButton'
 import { HideSidebarMenu } from './sidebar-nav-controls'
 import { translate } from '@/i18n/i18n'
 import { lazyWithRetry } from '@/lib/lazy-with-retry'
+import { useCloudroomConfigured } from '@/cloudroom/use-cloudroom-configured'
+import { useOpenmuseConfigured } from '@/openmuse/use-openmuse-configured'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
 
 export function shouldShowMobileButton(
@@ -55,6 +67,11 @@ const SidebarNav = React.memo(function SidebarNav() {
   const worktreePaletteShortcutCombos = useShortcutKeyComboDetails('worktree.palette')
   const openAutomationsPage = useAppStore((s) => s.openAutomationsPage)
   const openMobilePage = useAppStore((s) => s.openMobilePage)
+  const openAgentOsPage = useAppStore((s) => s.openAgentOsPage)
+  const openCloudRoomPage = useAppStore((s) => s.openCloudRoomPage)
+  const openOpenMusePage = useAppStore((s) => s.openOpenMusePage)
+  const cloudroomConfigured = useCloudroomConfigured()
+  const openmuseConfigured = useOpenmuseConfigured()
   const openArtifactsPage = useAppStore((s) => s.openArtifactsPage)
   const openSkillsPage = useAppStore((s) => s.openSkillsPage)
   const openModal = useAppStore((s) => s.openModal)
@@ -67,6 +84,9 @@ const SidebarNav = React.memo(function SidebarNav() {
   const showSkillsButton = useAppStore((s) => shouldShowSkillsButton(s.settings))
   const automationsActive = activeView === 'automations'
   const mobileActive = activeView === 'mobile'
+  const agentOsActive = activeView === 'agent-os'
+  const cloudroomActive = activeView === 'cloudroom'
+  const openmuseActive = activeView === 'openmuse'
   const artifactsActive = activeView === 'artifacts'
   const skillsActive = activeView === 'skills'
   const mobileOnboardingBadge = useMobileSidebarOnboardingBadge(showMobileButton)
@@ -119,6 +139,76 @@ const SidebarNav = React.memo(function SidebarNav() {
       </button>
       <SetupGuideSidebarEntry />
       <SidebarTaskNavButton />
+      <button
+        type="button"
+        onClick={openAgentOsPage}
+        aria-current={agentOsActive ? 'page' : undefined}
+        className={
+          agentOsActive
+            ? 'flex w-full items-center gap-2 rounded-md bg-worktree-sidebar-accent px-2 py-1.5 text-left text-[13px] font-medium tracking-tight text-worktree-sidebar-accent-foreground transition-colors'
+            : 'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[13px] font-medium tracking-tight text-worktree-sidebar-foreground/60 transition-colors hover:bg-worktree-sidebar-foreground/8'
+        }
+      >
+        <Cpu
+          className={
+            agentOsActive
+              ? 'size-4 shrink-0'
+              : 'size-4 shrink-0 text-worktree-sidebar-foreground/30'
+          }
+          strokeWidth={agentOsActive ? 2.25 : 1.75}
+        />
+        <span className="flex-1">
+          {translate('auto.components.sidebar.SidebarNav.agentOs', 'Agent OS')}
+        </span>
+      </button>
+      {cloudroomConfigured ? (
+        <button
+          type="button"
+          onClick={openCloudRoomPage}
+          aria-current={cloudroomActive ? 'page' : undefined}
+          className={
+            cloudroomActive
+              ? 'flex w-full items-center gap-2 rounded-md bg-worktree-sidebar-accent px-2 py-1.5 text-left text-[13px] font-medium tracking-tight text-worktree-sidebar-accent-foreground transition-colors'
+              : 'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[13px] font-medium tracking-tight text-worktree-sidebar-foreground/60 transition-colors hover:bg-worktree-sidebar-foreground/8'
+          }
+        >
+          <Cloud
+            className={
+              cloudroomActive
+                ? 'size-4 shrink-0'
+                : 'size-4 shrink-0 text-worktree-sidebar-foreground/30'
+            }
+            strokeWidth={cloudroomActive ? 2.25 : 1.75}
+          />
+          <span className="flex-1">
+            {translate('auto.components.sidebar.SidebarNav.cloudroom', 'CloudRoom')}
+          </span>
+        </button>
+      ) : null}
+      {openmuseConfigured ? (
+        <button
+          type="button"
+          onClick={openOpenMusePage}
+          aria-current={openmuseActive ? 'page' : undefined}
+          className={
+            openmuseActive
+              ? 'flex w-full items-center gap-2 rounded-md bg-worktree-sidebar-accent px-2 py-1.5 text-left text-[13px] font-medium tracking-tight text-worktree-sidebar-accent-foreground transition-colors'
+              : 'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[13px] font-medium tracking-tight text-worktree-sidebar-foreground/60 transition-colors hover:bg-worktree-sidebar-foreground/8'
+          }
+        >
+          <Sparkles
+            className={
+              openmuseActive
+                ? 'size-4 shrink-0'
+                : 'size-4 shrink-0 text-worktree-sidebar-foreground/30'
+            }
+            strokeWidth={openmuseActive ? 2.25 : 1.75}
+          />
+          <span className="flex-1">
+            {translate('auto.components.sidebar.SidebarNav.openmuse', 'OpenMuse')}
+          </span>
+        </button>
+      ) : null}
       {showArtifactsButton ? (
         <ContextMenu>
           <ContextMenuTrigger asChild>

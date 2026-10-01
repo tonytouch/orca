@@ -122,3 +122,6 @@ export type TopLevelView =
   | 'skills'
   | 'artifacts'
   | 'mobile'
+  | 'agent-os'
+  | 'cloudroom'
+  | 'openmuse'

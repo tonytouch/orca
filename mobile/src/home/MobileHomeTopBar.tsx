@@ -1,9 +1,17 @@
-import { Settings } from 'lucide-react-native'
+import { Cpu, Settings, Sparkles } from 'lucide-react-native'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { OrcaLogo } from '../components/OrcaLogo'
 import { colors, spacing } from '../theme/mobile-theme'
 
-export function MobileHomeTopBar({ onOpenSettings }: { onOpenSettings: () => void }) {
+export function MobileHomeTopBar({
+  onOpenSettings,
+  onOpenAgentOs,
+  onOpenOpenMuse
+}: {
+  onOpenSettings: () => void
+  onOpenAgentOs?: () => void
+  onOpenOpenMuse?: () => void
+}) {
   return (
     <View style={styles.topBar}>
       <View style={styles.brandLockup}>
@@ -12,12 +20,33 @@ export function MobileHomeTopBar({ onOpenSettings }: { onOpenSettings: () => voi
         </View>
         <Text style={styles.brandName}>Orca</Text>
       </View>
-      <Pressable
-        style={({ pressed }) => [styles.iconButton, pressed && styles.iconButtonPressed]}
-        onPress={onOpenSettings}
-      >
-        <Settings size={18} color={colors.textSecondary} />
-      </Pressable>
+      <View style={styles.actionsGroup}>
+        {onOpenAgentOs && (
+          <Pressable
+            style={({ pressed }) => [styles.iconButton, pressed && styles.iconButtonPressed]}
+            onPress={onOpenAgentOs}
+            accessibilityLabel="Agent OS"
+          >
+            <Cpu size={18} color={colors.accentBlue} />
+          </Pressable>
+        )}
+        {onOpenOpenMuse ? (
+          <Pressable
+            style={({ pressed }) => [styles.iconButton, pressed && styles.iconButtonPressed]}
+            onPress={onOpenOpenMuse}
+            accessibilityLabel="OpenMuse"
+          >
+            <Sparkles size={18} color={colors.accentBlue} />
+          </Pressable>
+        ) : null}
+        <Pressable
+          style={({ pressed }) => [styles.iconButton, pressed && styles.iconButtonPressed]}
+          onPress={onOpenSettings}
+          accessibilityLabel="Settings"
+        >
+          <Settings size={18} color={colors.textSecondary} />
+        </Pressable>
+      </View>
     </View>
   )
 }
@@ -41,5 +70,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  iconButtonPressed: { backgroundColor: colors.bgRaised }
+  iconButtonPressed: { backgroundColor: colors.bgRaised },
+  actionsGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs
+  }
 })

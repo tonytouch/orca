@@ -116,6 +116,9 @@ export type UiViewHistory =
   | 'skills'
   | 'artifacts'
   | 'mobile'
+  | 'agent-os'
+  | 'cloudroom'
+  | 'openmuse'
 
 export type UISliceCore = {
   sidebarOpen: boolean
@@ -151,6 +154,9 @@ export type UISliceCore = {
   previousViewBeforeSkills: Exclude<UiViewHistory, 'skills'>
   previousViewBeforeMobile: Exclude<UiViewHistory, 'mobile'>
   previousViewBeforeArtifacts: Exclude<UiViewHistory, 'artifacts'>
+  previousViewBeforeAgentOs: Exclude<UiViewHistory, 'agent-os'>
+  previousViewBeforeCloudRoom: Exclude<UiViewHistory, 'cloudroom'>
+  previousViewBeforeOpenMuse: Exclude<UiViewHistory, 'openmuse'>
   setActiveView: (view: UISliceCore['activeView']) => void
   taskPageData: TaskPageData
   taskResumeState: TaskResumeState | undefined
@@ -194,6 +200,12 @@ export type UISliceCore = {
   closeArtifactsPage: () => void
   openMobilePage: () => void
   closeMobilePage: () => void
+  openAgentOsPage: () => void
+  closeAgentOsPage: () => void
+  openCloudRoomPage: () => void
+  closeCloudRoomPage: () => void
+  openOpenMusePage: () => void
+  closeOpenMusePage: () => void
   setNewWorkspaceDraft: (draft: NonNullable<UISliceCore['newWorkspaceDraft']>) => void
   clearNewWorkspaceDraft: () => void
   pendingRevealWorktree: PendingSidebarWorktreeReveal | null
