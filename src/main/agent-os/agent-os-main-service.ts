@@ -11,6 +11,7 @@ import type {
   AgentOsTokenService
 } from '../../shared/agent-os-endpoints'
 import { getSecretStore } from '../../shared/secret-store'
+import { cancelUnreadResponseBody } from '../lib/unread-response-body'
 import { mainProcessState as state } from '../startup/main-process-state'
 import {
   readAgentOsEndpoints,
@@ -42,9 +43,15 @@ export class AgentOsMainService {
     mode: 'remote'
   })
   private healthInterval: NodeJS.Timeout | null = null
+  private endpointsBound = false
 
-  constructor() {
+  // Why lazy: app.getPath throws with no ready Electron app, and that must stay inside start()'s catch.
+  private bindSavedEndpoints(): void {
+    if (this.endpointsBound) {
+      return
+    }
     this.bindSupervisor(readAgentOsEndpoints(userDataDir()))
+    this.endpointsBound = true
   }
 
   private bindSupervisor(config: AgentOsEndpointConfig): void {
@@ -63,6 +70,7 @@ export class AgentOsMainService {
   }
 
   async reprobe(): Promise<AgentOsBackendSnapshot> {
+    this.bindSavedEndpoints()
     const snapshot = await this.supervisor.start()
     this.broadcastStatus(snapshot)
     if (!this.healthInterval) {
@@ -80,6 +88,7 @@ export class AgentOsMainService {
     }
     try {
       const res = await fetch(`${snap.baseUrl}/healthz`, { signal: AbortSignal.timeout(2000) })
+      await cancelUnreadResponseBody(res)
       if (!res.ok) {
         snap.status = 'unhealthy'
         this.broadcastStatus(snap)
@@ -110,6 +119,7 @@ export class AgentOsMainService {
     const saved = writeAgentOsEndpoints(userDataDir(), config)
     await this.supervisor.stop()
     this.bindSupervisor(saved)
+    this.endpointsBound = true
     await this.reprobe()
     return this.getConfig()
   }
