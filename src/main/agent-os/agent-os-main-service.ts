@@ -13,6 +13,7 @@ import type {
 import { getSecretStore } from '../../shared/secret-store'
 import { cancelUnreadResponseBody } from '../lib/unread-response-body'
 import { mainProcessState as state } from '../startup/main-process-state'
+import { registerAgentOsDesktopIpc } from './agent-os-desktop-ipc'
 import {
   readAgentOsEndpoints,
   readAgentOsPublicConfig,
@@ -154,6 +155,10 @@ export class AgentOsMainService {
       this.setToken(service, token)
     )
     ipcMain.handle('agent-os:getToken', () => this.getToken())
+    registerAgentOsDesktopIpc({
+      getConfig: () => this.getConfig(),
+      getToken: () => this.getToken()
+    })
   }
 }
 

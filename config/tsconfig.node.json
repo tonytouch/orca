@@ -17,7 +17,8 @@
     "../src/types/**/*",
     "../agent-os/**/*",
     "../uao/cloudroom/**/*",
-    "../uao/openmuse/**/*"
+    "../uao/openmuse/**/*",
+    "../uao/desktop-shell/**/*"
   ],
   "compilerOptions": {
     "composite": true,

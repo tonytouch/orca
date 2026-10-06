@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   AGENT_OS_DEFAULT_BASE_URL,
+  AGENT_OS_LEGACY_EMBED_BASE_URL,
   AGENT_OS_DEFAULT_HERMES_URL,
   AGENT_OS_DEFAULT_OMNIROUTE_URL,
   CLOUDROOM_DEFAULT_BASE_URL,
@@ -32,7 +33,7 @@ describe('parseAgentOsSavedEndpoints', () => {
         })
       )
     ).toEqual({
-      baseUrl: AGENT_OS_DEFAULT_BASE_URL,
+      baseUrl: AGENT_OS_LEGACY_EMBED_BASE_URL,
       hermesUrl: AGENT_OS_DEFAULT_HERMES_URL,
       omnirouteUrl: AGENT_OS_DEFAULT_OMNIROUTE_URL,
       cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
@@ -83,13 +84,29 @@ describe('parseAgentOsSavedEndpoints', () => {
     expect(OPENMUSE_DEFAULT_API_URL).toBe('http://100.90.167.20:8797')
     expect(OPENMUSE_RETIRED_API_URL).toBe('http://100.90.167.20:8787')
     expect(
-      parseAgentOsSavedEndpoints(
-        JSON.stringify({ openmuseApiUrl: 'http://100.90.167.20:8787' })
-      )
+      parseAgentOsSavedEndpoints(JSON.stringify({ openmuseApiUrl: 'http://100.90.167.20:8787' }))
     ).toMatchObject({
       openmuseApiUrl: 'http://100.90.167.20:8797',
       hermesUrl: 'http://100.90.167.20:8787'
     })
+  })
+
+  it('defaults a missing Agent OS URL to the Tailscale HTTPS chat host', () => {
+    expect(AGENT_OS_DEFAULT_BASE_URL).toBe('https://server.tail85e19.ts.net:8444')
+    expect(
+      parseAgentOsSavedEndpoints(JSON.stringify({ hermesUrl: 'http://10.0.0.8:8787' }))
+    ).toMatchObject({
+      baseUrl: 'https://server.tail85e19.ts.net:8444'
+    })
+    expect(parseAgentOsSavedEndpoints('https://server.tail85e19.ts.net:8444/')?.baseUrl).toBe(
+      'https://server.tail85e19.ts.net:8444'
+    )
+    expect(parseAgentOsSavedEndpoints('http://100.90.167.20:8444')?.baseUrl).toBe(
+      'http://100.90.167.20:8444'
+    )
+    expect(parseAgentOsSavedEndpoints('https://server.tail85e19.ts.net:8444/#/chat')?.baseUrl).toBe(
+      'https://server.tail85e19.ts.net:8444'
+    )
   })
 
   it('returns null for empty storage', () => {

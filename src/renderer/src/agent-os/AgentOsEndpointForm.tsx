@@ -81,6 +81,10 @@ export function AgentOsEndpointForm({
         {translate(
           'auto.agent.os.AgentOsEndpointForm.c8f5df1618',
           'UAO attaches to Agent OS, CloudRoom, and OpenMuse. It does not start those servers. Clear the CloudRoom URL to hide that launch target. Clear the OpenMuse web URL to hide that page.'
+        )}{' '}
+        {translate(
+          'auto.agent.os.AgentOsEndpointForm.chatDefault',
+          'Chat opens on the Agent OS URL. Leave Antigravity or OpenMAIC blank to use that host. Leave Jarvis blank unless it is a different page from Chat.'
         )}
       </p>
       <label className="flex flex-col gap-1 text-sm">
@@ -89,6 +93,7 @@ export function AgentOsEndpointForm({
           value={draft.baseUrl}
           onChange={(event) => setDraft({ ...draft, baseUrl: event.target.value })}
           spellCheck={false}
+          placeholder={AGENT_OS_DEFAULT_ENDPOINTS.baseUrl}
         />
       </label>
       <label className="flex flex-col gap-1 text-sm">
@@ -105,6 +110,42 @@ export function AgentOsEndpointForm({
           value={draft.omnirouteUrl}
           onChange={(event) => setDraft({ ...draft, omnirouteUrl: event.target.value })}
           spellCheck={false}
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-sm">
+        {translate('auto.agent.os.AgentOsEndpointForm.antigravity', 'Antigravity')}
+        <Input
+          value={draft.antigravityUrl}
+          onChange={(event) => setDraft({ ...draft, antigravityUrl: event.target.value })}
+          spellCheck={false}
+          placeholder={translate(
+            'auto.agent.os.AgentOsEndpointForm.antigravityHint',
+            'Blank uses port 8010 on the Agent OS host'
+          )}
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-sm">
+        {translate('auto.agent.os.AgentOsEndpointForm.openmaic', 'OpenMAIC')}
+        <Input
+          value={draft.openmaicUrl}
+          onChange={(event) => setDraft({ ...draft, openmaicUrl: event.target.value })}
+          spellCheck={false}
+          placeholder={translate(
+            'auto.agent.os.AgentOsEndpointForm.openmaicHint',
+            'Blank uses port 3000 on the Agent OS host'
+          )}
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-sm">
+        {translate('auto.agent.os.AgentOsEndpointForm.jarvis', 'Jarvis')}
+        <Input
+          value={draft.jarvisUrl}
+          onChange={(event) => setDraft({ ...draft, jarvisUrl: event.target.value })}
+          spellCheck={false}
+          placeholder={translate(
+            'auto.agent.os.AgentOsEndpointForm.jarvisHint',
+            'Blank keeps Jarvis on the Chat page'
+          )}
         />
       </label>
       <label className="flex flex-col gap-1 text-sm">

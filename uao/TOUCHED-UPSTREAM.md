@@ -100,21 +100,39 @@ UAO does not vendor OpenMuse. The page is a webview on `persist:openmuse`, not a
 
 These existing files are patched:
 
-| File                                                                                                                 | Why                                                                                          |
-| -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `config/tsconfig.node.json`                                                                                          | Typecheck includes `uao/openmuse/**`.                                                        |
-| `config/tsconfig.web.json`, `config/tsconfig.tc.web.json`                                                            | Renderer and preload may import the health and permission modules.                           |
-| `src/shared/agent-os-endpoints.ts`, `src/shared/agent-os-endpoints.test.ts`                                          | OpenMuse web (`:8081`) and API (`:8797`) URLs, with the same empty-URL hide as CloudRoom.    |
-| `src/main/agent-os/agent-os-endpoint-store.ts`, `src/main/agent-os/agent-os-endpoint-store.test.ts`                  | Persist both URLs. No OpenMuse token.                                                        |
-| `src/main/startup/main-process-ipc-bootstrap.ts`                                                                     | Registers OpenMuse health IPC and the guest permission handler.                              |
-| `src/preload/api-types.ts`, `src/preload/index.ts`                                                                   | Expose `window.api.openmuse`.                                                                |
-| `src/shared/ui-chrome-types.ts`, `src/shared/top-level-view.ts`, `src/shared/rpc-contract/client-ui-params.ts`       | `openmuse` top-level view.                                                                   |
-| `src/renderer/src/store/slices/ui/ui-slice-contract-core.ts`, `ui-slice-task-actions.ts`, `ui-slice-view-actions.ts` | `openOpenMusePage`.                                                                          |
-| `src/renderer/src/app-shell/AppWorkspaceShell.tsx`                                                                   | Lazy OpenMuse view.                                                                          |
-| `src/renderer/src/components/sidebar/SidebarNav.tsx`                                                                 | OpenMuse nav button, hidden when the web URL is empty.                                      |
-| `src/renderer/src/agent-os/AgentOsEndpointForm.tsx`                                                                  | OpenMuse web and API URL fields.                                                             |
-| `mobile/src/agent-os/agent-os-saved-endpoints.ts`, `mobile/app/agent-os-endpoint-modal.tsx`                          | Phone stores both URLs and no token.                                                         |
-| `mobile/app/_layout.tsx`, `mobile/src/home/MobileHomeScreen.tsx`, `mobile/src/home/MobileHomeTopBar.tsx`             | Phone route and home button.                                                                 |
-| `mobile/src/settings/mobile-settings-menu-items.ts`                                                                  | Settings entry that opens the WebView.                                                       |
-| `mobile/metro.config.js`                                                                                             | Metro can resolve `uao/openmuse` for the shared health check.                                |
-| `mobile/app/agent-os-styles.ts`                                                                                      | Endpoint modal can scroll so the extra URL fields fit.                                       |
+| File                                                                                                                 | Why                                                                                       |
+| -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `config/tsconfig.node.json`                                                                                          | Typecheck includes `uao/openmuse/**`.                                                     |
+| `config/tsconfig.web.json`, `config/tsconfig.tc.web.json`                                                            | Renderer and preload may import the health and permission modules.                        |
+| `src/shared/agent-os-endpoints.ts`, `src/shared/agent-os-endpoints.test.ts`                                          | OpenMuse web (`:8081`) and API (`:8797`) URLs, with the same empty-URL hide as CloudRoom. |
+| `src/main/agent-os/agent-os-endpoint-store.ts`, `src/main/agent-os/agent-os-endpoint-store.test.ts`                  | Persist both URLs. No OpenMuse token.                                                     |
+| `src/main/startup/main-process-ipc-bootstrap.ts`                                                                     | Registers OpenMuse health IPC and the guest permission handler.                           |
+| `src/preload/api-types.ts`, `src/preload/index.ts`                                                                   | Expose `window.api.openmuse`.                                                             |
+| `src/shared/ui-chrome-types.ts`, `src/shared/top-level-view.ts`, `src/shared/rpc-contract/client-ui-params.ts`       | `openmuse` top-level view.                                                                |
+| `src/renderer/src/store/slices/ui/ui-slice-contract-core.ts`, `ui-slice-task-actions.ts`, `ui-slice-view-actions.ts` | `openOpenMusePage`.                                                                       |
+| `src/renderer/src/app-shell/AppWorkspaceShell.tsx`                                                                   | Lazy OpenMuse view.                                                                       |
+| `src/renderer/src/components/sidebar/SidebarNav.tsx`                                                                 | OpenMuse nav button, hidden when the web URL is empty.                                    |
+| `src/renderer/src/agent-os/AgentOsEndpointForm.tsx`                                                                  | OpenMuse web and API URL fields.                                                          |
+| `mobile/src/agent-os/agent-os-saved-endpoints.ts`, `mobile/app/agent-os-endpoint-modal.tsx`                          | Phone stores both URLs and no token.                                                      |
+| `mobile/app/_layout.tsx`, `mobile/src/home/MobileHomeScreen.tsx`, `mobile/src/home/MobileHomeTopBar.tsx`             | Phone route and home button.                                                              |
+| `mobile/src/settings/mobile-settings-menu-items.ts`                                                                  | Settings entry that opens the WebView.                                                    |
+| `mobile/metro.config.js`                                                                                             | Metro can resolve `uao/openmuse` for the shared health check.                             |
+| `mobile/app/agent-os-styles.ts`                                                                                      | Endpoint modal can scroll so the extra URL fields fit.                                    |
+
+## Desktop shell (one app)
+
+The Agent OS page is the UAO front end: Chat at `https://server.tail85e19.ts.net:8444/#/chat` by default, plus the other screens that used to require the `ai.uao.desktop` shell. New code lives in `uao/desktop-shell/**`, `src/shared/agent-os-surface.ts`, `src/main/agent-os/agent-os-desktop-ipc.ts`, and `src/renderer/src/agent-os/AgentOsPaneHost.tsx` (and the cockpit, workstation, and remote pane next to it).
+
+These existing files are patched:
+
+| File                                                                                   | Why                                                                                                                                                          |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `package.json`, `mobile/app.json`                                                      | App version `1.4.216`.                                                                                                                                       |
+| `src/shared/agent-os-endpoints.ts`, `src/shared/agent-os-endpoints.test.ts`            | Default Agent OS URL is the Tailscale HTTPS chat host. Optional Antigravity, OpenMAIC, and Jarvis URLs. An `http://` address or a Tailscale IP still parses. |
+| `src/main/agent-os/agent-os-endpoint-store.ts`                                         | Persists those three URLs. Blank means derive or hide, not a hardcoded host.                                                                                 |
+| `src/main/agent-os/agent-os-main-service.ts`                                           | Registers the cockpit, health, and published-pane IPC.                                                                                                       |
+| `src/preload/api/agent-os-bridge.ts`                                                   | Exposes those calls on `window.api.agentOs`.                                                                                                                 |
+| `config/tsconfig.node.json`, `config/tsconfig.web.json`, `config/tsconfig.tc.web.json` | Typecheck includes `uao/desktop-shell/**`.                                                                                                                   |
+| `src/renderer/src/agent-os/AgentOsView.tsx`                                            | Hosts the pane switcher instead of a single `#overview` embed.                                                                                               |
+| `src/renderer/src/agent-os/AgentOsEndpointForm.tsx`                                    | Edits the chat URL and the three optional URLs.                                                                                                              |
+| `mobile/src/agent-os/remote-http-load.ts`, `mobile/app/agent-os.tsx`                   | The phone opens the same Chat URL, and still opens the embed UI when the saved port is 5050.                                                                 |

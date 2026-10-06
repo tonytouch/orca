@@ -20,6 +20,7 @@
     "../src/shared/**/*",
     "../uao/cloudroom/cloudroom-types.ts",
     "../uao/openmuse/**/*",
+    "../uao/desktop-shell/**/*",
     "../src/main/gitlab/mappers.ts",
     "../src/main/ipc/deferred-emoji-shortcode-dataset.ts",
     "../src/main/ipc/worktree-branch-name.ts",

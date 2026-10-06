@@ -8,6 +8,7 @@ import {
   Cpu,
   Globe,
   LayoutDashboard,
+  MessageSquare,
   RefreshCw,
   Terminal
 } from 'lucide-react-native'
@@ -19,7 +20,7 @@ import {
   saveAgentOsEndpoints,
   type AgentOsSavedEndpoints
 } from '../src/agent-os/agent-os-saved-endpoints'
-import { agentOsEmbedUrl } from '../src/agent-os/remote-http-load'
+import { agentOsPrimaryLinks } from '../../src/shared/agent-os-surface'
 import {
   RemoteHttpWebView,
   type RemoteHttpWebViewHandle
@@ -32,10 +33,12 @@ export default function AgentOsMobileScreen() {
   const insets = useSafeAreaInsets()
   const webViewRef = useRef<RemoteHttpWebViewHandle>(null)
   const [endpoints, setEndpoints] = useState<AgentOsSavedEndpoints>(defaultAgentOsEndpoints())
-  const [activeHash, setActiveHash] = useState('overview')
+  const [activeId, setActiveId] = useState('chat')
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const baseUrl = endpoints.baseUrl
-  const fullUrl = agentOsEmbedUrl(baseUrl, activeHash)
+  const links = agentOsPrimaryLinks(baseUrl)
+  const activeLink = links.find((link) => link.id === activeId) ?? links[0]
+  const fullUrl = activeLink?.url ?? ''
 
   useEffect(() => {
     let mounted = true
@@ -61,9 +64,8 @@ export default function AgentOsMobileScreen() {
     setIsConfigModalOpen(false)
   }, [])
 
-  const handleNavSwitch = useCallback((hash: string) => {
-    setActiveHash(hash)
-    webViewRef.current?.injectJavaScript(`window.location.hash = ${JSON.stringify(hash)}; true;`)
+  const handleNavSwitch = useCallback((id: string) => {
+    setActiveId(id)
   }, [])
 
   return (
@@ -114,61 +116,32 @@ export default function AgentOsMobileScreen() {
         ) : null}
       </View>
       <View style={styles.bottomNav}>
-        <Pressable
-          style={[styles.navItem, activeHash === 'overview' && styles.navItemActive]}
-          onPress={() => handleNavSwitch('overview')}
-        >
-          <LayoutDashboard
-            size={18}
-            color={activeHash === 'overview' ? colors.accentBlue : colors.textSecondary}
-          />
-          <Text style={[styles.navItemText, activeHash === 'overview' && styles.navItemTextActive]}>
-            Overview
-          </Text>
-        </Pressable>
-        <Pressable
-          style={[styles.navItem, activeHash === 'mission-control' && styles.navItemActive]}
-          onPress={() => handleNavSwitch('mission-control')}
-        >
-          <Cpu
-            size={18}
-            color={activeHash === 'mission-control' ? colors.accentBlue : colors.textSecondary}
-          />
-          <Text
-            style={[
-              styles.navItemText,
-              activeHash === 'mission-control' && styles.navItemTextActive
-            ]}
-          >
-            Missions
-          </Text>
-        </Pressable>
-        <Pressable
-          style={[styles.navItem, activeHash === 'terminal' && styles.navItemActive]}
-          onPress={() => handleNavSwitch('terminal')}
-        >
-          <Terminal
-            size={18}
-            color={activeHash === 'terminal' ? colors.accentBlue : colors.textSecondary}
-          />
-          <Text style={[styles.navItemText, activeHash === 'terminal' && styles.navItemTextActive]}>
-            Terminal
-          </Text>
-        </Pressable>
-        <Pressable
-          style={[styles.navItem, activeHash === 'pwa-approvals' && styles.navItemActive]}
-          onPress={() => handleNavSwitch('pwa-approvals')}
-        >
-          <CheckCircle2
-            size={18}
-            color={activeHash === 'pwa-approvals' ? colors.accentBlue : colors.textSecondary}
-          />
-          <Text
-            style={[styles.navItemText, activeHash === 'pwa-approvals' && styles.navItemTextActive]}
-          >
-            Approvals
-          </Text>
-        </Pressable>
+        {links.map((link) => {
+          const selected = link.id === activeLink?.id
+          const color = selected ? colors.accentBlue : colors.textSecondary
+          const Icon =
+            link.id === 'chat'
+              ? MessageSquare
+              : link.id === 'hermes-webui'
+                ? Cpu
+                : link.id === 'terminal'
+                  ? Terminal
+                  : link.id === 'pwa-approvals'
+                    ? CheckCircle2
+                    : LayoutDashboard
+          return (
+            <Pressable
+              key={link.id}
+              style={[styles.navItem, selected && styles.navItemActive]}
+              onPress={() => handleNavSwitch(link.id)}
+            >
+              <Icon size={18} color={color} />
+              <Text style={[styles.navItemText, selected && styles.navItemTextActive]}>
+                {link.label}
+              </Text>
+            </Pressable>
+          )
+        })}
       </View>
       <AgentOsEndpointModal
         visible={isConfigModalOpen}

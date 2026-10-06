@@ -13,6 +13,12 @@ describe('agentOsEmbedUrl', () => {
     expect(agentOsEmbedUrl('http://100.90.167.20:5050/', '#terminal')).toBe(
       'http://100.90.167.20:5050/?embed=1#terminal'
     )
+    expect(agentOsEmbedUrl('https://server.tail85e19.ts.net:8444', '/chat')).toBe(
+      'https://server.tail85e19.ts.net:8444/#/chat'
+    )
+    expect(agentOsEmbedUrl('http://100.90.167.20:8444', 'chat')).toBe(
+      'http://100.90.167.20:8444/#/chat'
+    )
   })
 })
 

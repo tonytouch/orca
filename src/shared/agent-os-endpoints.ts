@@ -1,5 +1,11 @@
-/** Tailscale addresses for Keith's Agent OS host. URLs are not secrets. */
-export const AGENT_OS_DEFAULT_BASE_URL = 'http://100.90.167.20:5050'
+/**
+ * Tailscale addresses for Keith's Agent OS host. URLs are not secrets.
+ * The web UI he uses is hash-routed Chat on Tailscale HTTPS. `:5050` remains a
+ * valid saved address (the older embed UI) and is not rewritten.
+ */
+export const AGENT_OS_DEFAULT_BASE_URL = 'https://server.tail85e19.ts.net:8444'
+/** Previous default. Kept so a saved copy of it still loads the embed UI. */
+export const AGENT_OS_LEGACY_EMBED_BASE_URL = 'http://100.90.167.20:5050'
 export const AGENT_OS_DEFAULT_HERMES_URL = 'http://100.90.167.20:8787'
 export const AGENT_OS_DEFAULT_OMNIROUTE_URL = 'http://100.90.167.20:20128'
 /** cloudroom-core's own default port, on the same Tailscale host. */
@@ -22,6 +28,12 @@ export type AgentOsEndpointConfig = {
   cloudroomUrl: string
   openmuseUrl: string
   openmuseApiUrl: string
+  /** Blank uses http on port 8010 of the Agent OS host. */
+  antigravityUrl: string
+  /** Blank uses http on port 3000 of the Agent OS host. */
+  openmaicUrl: string
+  /** Blank hides the extra Jarvis pane. Chat on :8444 is that front end. */
+  jarvisUrl: string
   /** When false, UAO only attaches to the remote backend and never spawns one. */
   localSupervisor: boolean
 }
@@ -37,6 +49,9 @@ export const AGENT_OS_DEFAULT_ENDPOINTS: AgentOsEndpointConfig = {
   cloudroomUrl: CLOUDROOM_DEFAULT_BASE_URL,
   openmuseUrl: OPENMUSE_DEFAULT_WEB_URL,
   openmuseApiUrl: OPENMUSE_DEFAULT_API_URL,
+  antigravityUrl: '',
+  openmaicUrl: '',
+  jarvisUrl: '',
   localSupervisor: false
 }
 
@@ -66,6 +81,18 @@ export function resolveOptionalHttpUrl(incoming: string | undefined, previous: s
   return normalizeAgentOsHttpUrl(incoming, previous)
 }
 
+/** Missing or blank stays blank. An invalid value stays blank so the pane can derive or hide. */
+export function blankHttpUrlFromStored(stored: Record<string, unknown>, key: string): string {
+  if (!Object.hasOwn(stored, key)) {
+    return ''
+  }
+  const value = stored[key]
+  if (typeof value !== 'string' || !value.trim()) {
+    return ''
+  }
+  return normalizeAgentOsHttpUrl(value, '')
+}
+
 export function cloudroomUrlFromStored(stored: Record<string, unknown>): string {
   return optionalHttpUrlFromStored(stored, 'cloudroomUrl', CLOUDROOM_DEFAULT_BASE_URL)
 }
@@ -92,6 +119,7 @@ export function normalizeAgentOsHttpUrl(value: string, fallback: string): string
     if (url.protocol !== 'http:' && url.protocol !== 'https:') {
       return fallback
     }
+    url.hash = ''
     return url.toString().replace(/\/$/, '')
   } catch {
     return fallback

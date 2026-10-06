@@ -1,10 +1,7 @@
+import { agentOsSurfaceUrl } from '../../../src/shared/agent-os-surface'
+
 export function agentOsEmbedUrl(baseUrl: string, hash: string): string {
-  const trimmed = baseUrl.trim().replace(/\/$/, '')
-  if (!trimmed) {
-    return ''
-  }
-  const fragment = hash.trim().replace(/^#/, '') || 'overview'
-  return `${trimmed}/?embed=1#${fragment}`
+  return agentOsSurfaceUrl(baseUrl, hash)
 }
 
 function documentKey(url: string): string {

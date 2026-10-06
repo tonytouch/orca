@@ -17452,7 +17452,14 @@
           "60d1cfde4c": "CloudRoom token",
           "1b3239c29e": "Omniroute token",
           "3b7a4cd28d": "Hermes token",
-          "204357c484": "Agent OS token"
+          "204357c484": "Agent OS token",
+          "chatDefault": "Chat opens on the Agent OS URL. Leave Antigravity or OpenMAIC blank to use that host. Leave Jarvis blank unless it is a different page from Chat.",
+          "antigravity": "Antigravity",
+          "antigravityHint": "Blank uses port 8010 on the Agent OS host",
+          "openmaic": "OpenMAIC",
+          "openmaicHint": "Blank uses port 3000 on the Agent OS host",
+          "jarvis": "Jarvis",
+          "jarvisHint": "Blank keeps Jarvis on the Chat page"
         },
         "AgentOsView": {
           "9b73425010": "Retry Connection",
@@ -17462,6 +17469,36 @@
           "8325fc6cc0": "Agent OS Backend Unavailable",
           "58bf5f3a7e": "Endpoints",
           "30684e3f5b": "Hide endpoints"
+        },
+        "AgentOsCockpit": {
+          "title": "Cockpit approvals",
+          "refresh": "Refresh",
+          "loading": "Checking the approval queue…",
+          "empty": "Nothing is waiting for approval.",
+          "approve": "Approve",
+          "reject": "Reject",
+          "history": "Recent decisions"
+        },
+        "pane": {
+          "chat": "Chat",
+          "hermes": "Hermes",
+          "overview": "Overview",
+          "missions": "Missions",
+          "terminal": "Terminal",
+          "approvals": "Approvals",
+          "cockpit": "Cockpit",
+          "omniroute": "Omniroute",
+          "antigravity": "Antigravity",
+          "workstation": "Workstation",
+          "openmaic": "OpenMAIC",
+          "jarvis": "Jarvis"
+        },
+        "AgentOsWorkstation": {
+          "title": "Workstation health",
+          "refresh": "Refresh",
+          "loading": "Checking services…",
+          "up": " · up",
+          "down": " · down"
         }
       }
     },
