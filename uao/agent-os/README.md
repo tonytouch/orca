@@ -17,16 +17,18 @@ Executable code stays at repo-root [`agent-os/`](../../agent-os/) because the ma
 
 The supervisor's default mode is `remote`. UAO starts that way unless Settings → Endpoints has "Also start a local backend on this machine" checked, or `AGENT_OS_LOCAL=1` is set. A remote attach never looks for `backend.js`.
 
+The desktop Agent OS page opens Chat first on that HTTPS host. A saved `http://` URL or a Tailscale IP still works. Port `5050` keeps the older `?embed=1` screens (Overview, Missions, Terminal, Approvals). Any other port, including `8444` on a Tailscale IP, opens `#/chat`. Hermes WebUI is `{that origin}/hermes-webui`. Cockpit approvals and workstation health are native. Antigravity defaults to HTTP port `8010` on the same host, OpenMAIC to port `3000`. Both can be overridden. Jarvis is not a second copy of Chat; set a Jarvis URL only when it is a different page. See [`../desktop-shell/README.md`](../desktop-shell/README.md).
+
 Default URLs (not secrets), overridable in the desktop Endpoints form and on the phone:
 
-| Service   | URL                          |
-| --------- | ---------------------------- |
-| Agent OS  | `http://100.90.167.20:5050`  |
-| Hermes    | `http://100.90.167.20:8787`  |
-| Omniroute | `http://100.90.167.20:20128` |
-| CloudRoom | `http://100.90.167.20:9840`  |
-| OpenMuse web | `http://100.90.167.20:8081` |
-| OpenMuse API | `http://100.90.167.20:8797` |
+| Service      | URL                                           |
+| ------------ | --------------------------------------------- |
+| Agent OS     | `https://server.tail85e19.ts.net:8444`        |
+| Hermes       | `http://100.90.167.20:8787`                   |
+| Omniroute    | `http://100.90.167.20:20128`                  |
+| CloudRoom    | `http://100.90.167.20:9840`                   |
+| OpenMuse web | `http://100.90.167.20:8081`                   |
+| OpenMuse API | `http://100.90.167.20:8797`                   |
 
 OpenMuse's API is 8797 because Hermes already uses 8787. See [`uao/openmuse/README.md`](../openmuse/README.md). An empty OpenMuse web URL hides that sidebar entry. The phone stores both URLs and no OpenMuse token. The phone does not copy a change made in the desktop Endpoints form; each app has its own saved copy, starting from these defaults.
 

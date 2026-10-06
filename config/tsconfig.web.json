@@ -8,7 +8,8 @@
     "../src/preload/api/**/*",
     "../src/shared/**/*",
     "../uao/cloudroom/cloudroom-types.ts",
-    "../uao/openmuse/**/*"
+    "../uao/openmuse/**/*",
+    "../uao/desktop-shell/**/*"
   ],
   "compilerOptions": {
     "composite": true,

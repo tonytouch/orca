@@ -1,50 +1,20 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react'
-import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
+import { useEffect, useState, useCallback } from 'react'
+import { AlertCircle, RefreshCw } from 'lucide-react'
 import {
   AGENT_OS_DEFAULT_BASE_URL,
+  AGENT_OS_DEFAULT_ENDPOINTS,
   type AgentOsPublicConfig
 } from '../../../shared/agent-os-endpoints'
 import type { AgentOsBackendSnapshot } from '../../../shared/agent-os-types'
-import { ORCA_BROWSER_GUEST_WEB_PREFERENCES_ATTRIBUTE } from '../../../shared/browser-guest-web-preferences'
-import { moveFocusToRendererBeforeWebviewDetach } from '../components/browser-pane/host-guest/webview-registry'
 import { AgentOsEndpointForm } from './AgentOsEndpointForm'
+import { AgentOsPaneHost } from './AgentOsPaneHost'
 import { translate } from '@/i18n/i18n'
-
-function attachAgentOsWebview(
-  container: HTMLDivElement,
-  partition: string,
-  embedUrl: string,
-  onLoadStopped: () => void,
-  onLoadFailed: (event: Electron.DidFailLoadEvent) => void
-): () => void {
-  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: createElement('webview') is Electron.WebviewTag in the renderer.
-  const webview = document.createElement('webview') as Electron.WebviewTag
-  webview.setAttribute('partition', partition)
-  webview.setAttribute('webpreferences', ORCA_BROWSER_GUEST_WEB_PREFERENCES_ATTRIBUTE)
-  webview.setAttribute('aria-label', 'Agent OS')
-  webview.style.width = '100%'
-  webview.style.height = '100%'
-  webview.style.border = 'none'
-  webview.addEventListener('did-stop-loading', onLoadStopped)
-  webview.addEventListener('did-fail-load', onLoadFailed)
-  container.appendChild(webview)
-  webview.setAttribute('src', embedUrl)
-  return () => {
-    webview.removeEventListener('did-stop-loading', onLoadStopped)
-    webview.removeEventListener('did-fail-load', onLoadFailed)
-    moveFocusToRendererBeforeWebviewDetach(webview)
-    webview.remove()
-  }
-}
 
 export default function AgentOsView(): React.JSX.Element {
   const [status, setStatus] = useState<AgentOsBackendSnapshot | null>(null)
   const [baseUrl, setBaseUrl] = useState<string>(AGENT_OS_DEFAULT_BASE_URL)
   const [config, setConfig] = useState<AgentOsPublicConfig | null>(null)
   const [showSettings, setShowSettings] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [iframeKey, setIframeKey] = useState<number>(0)
-  const webviewContainerRef = useRef<HTMLDivElement>(null)
 
   const refreshStatus = useCallback(async () => {
     try {
@@ -57,8 +27,6 @@ export default function AgentOsView(): React.JSX.Element {
       }
     } catch (err) {
       console.warn('[agent-os-view] failed to fetch status:', err)
-    } finally {
-      setLoading(false)
     }
   }, [])
 
@@ -78,8 +46,6 @@ export default function AgentOsView(): React.JSX.Element {
   }, [refreshStatus])
 
   const handleReload = (): void => {
-    setLoading(true)
-    setIframeKey((prev) => prev + 1)
     void window.api.agentOs
       .reprobe()
       .then((snap) => {
@@ -91,7 +57,6 @@ export default function AgentOsView(): React.JSX.Element {
       .catch((err: unknown) => {
         console.warn('[agent-os-view] failed to reprobe backend:', err)
       })
-      .finally(() => setLoading(false))
   }
 
   const isAvailable =
@@ -101,33 +66,7 @@ export default function AgentOsView(): React.JSX.Element {
     status?.status === 'probing' ||
     !status
 
-  const embedUrl = `${baseUrl.replace(/\/$/, '')}/?embed=1#overview`
-
-  useEffect(() => {
-    const container = webviewContainerRef.current
-    if (!isAvailable || !container) {
-      return undefined
-    }
-    let disposed = false
-    let detach: (() => void) | undefined
-    const onLoadStopped = (): void => setLoading(false)
-    const onLoadFailed = (event: Electron.DidFailLoadEvent): void => {
-      if (event.isMainFrame && event.errorCode !== -3) {
-        setLoading(false)
-      }
-    }
-    setLoading(true)
-    void window.api.browser.sessionResolvePartition({ profileId: null }).then((partition) => {
-      if (disposed || !partition) {
-        return
-      }
-      detach = attachAgentOsWebview(container, partition, embedUrl, onLoadStopped, onLoadFailed)
-    })
-    return () => {
-      disposed = true
-      detach?.()
-    }
-  }, [embedUrl, iframeKey, isAvailable])
+  const endpoints = config ?? { ...AGENT_OS_DEFAULT_ENDPOINTS, baseUrl }
 
   return (
     <div className="relative flex flex-col w-full h-full bg-background text-foreground overflow-hidden">
@@ -182,14 +121,9 @@ export default function AgentOsView(): React.JSX.Element {
           </button>
         </div>
       ) : (
-        <>
-          {loading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-xs z-10">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-          )}
-          <div ref={webviewContainerRef} className="h-full w-full" />
-        </>
+        <div className="min-h-0 flex-1">
+          <AgentOsPaneHost config={endpoints} />
+        </div>
       )}
     </div>
   )

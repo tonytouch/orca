@@ -7,6 +7,7 @@ import {
   OPENMUSE_DEFAULT_WEB_URL,
   migrateOpenMuseApiUrl,
   normalizeAgentOsHttpUrl,
+  blankHttpUrlFromStored,
   optionalHttpUrlFromStored,
   resolveOpenMuseApiUrl,
   resolveOptionalHttpUrl,
@@ -54,6 +55,9 @@ export function readAgentOsEndpoints(directory: string): AgentOsEndpointConfig {
     openmuseApiUrl: migrateOpenMuseApiUrl(
       optionalHttpUrlFromStored(stored, 'openmuseApiUrl', OPENMUSE_DEFAULT_API_URL)
     ),
+    antigravityUrl: blankHttpUrlFromStored(stored, 'antigravityUrl'),
+    openmaicUrl: blankHttpUrlFromStored(stored, 'openmaicUrl'),
+    jarvisUrl: blankHttpUrlFromStored(stored, 'jarvisUrl'),
     localSupervisor: stored.localSupervisor === true
   }
 }
@@ -70,6 +74,9 @@ export function writeAgentOsEndpoints(
     cloudroomUrl: resolveOptionalHttpUrl(config.cloudroomUrl, next.cloudroomUrl),
     openmuseUrl: resolveOptionalHttpUrl(config.openmuseUrl, next.openmuseUrl),
     openmuseApiUrl: resolveOpenMuseApiUrl(config.openmuseApiUrl, next.openmuseApiUrl),
+    antigravityUrl: resolveOptionalHttpUrl(config.antigravityUrl, next.antigravityUrl),
+    openmaicUrl: resolveOptionalHttpUrl(config.openmaicUrl, next.openmaicUrl),
+    jarvisUrl: resolveOptionalHttpUrl(config.jarvisUrl, next.jarvisUrl),
     localSupervisor: config.localSupervisor === true
   }
   mkdirSync(directory, { recursive: true })
