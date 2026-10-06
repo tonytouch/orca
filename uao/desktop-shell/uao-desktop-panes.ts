@@ -1,5 +1,5 @@
-import { cancelUnreadResponseBody } from '../../src/main/lib/unread-response-body'
 import type { AgentOsEndpointConfig } from '../../src/shared/agent-os-endpoints'
+import { cancelUnreadHttpBody } from './unread-http-body'
 import {
   agentOsPrimaryLinks,
   agentOsSurfaceUrl,
@@ -148,7 +148,7 @@ export async function fetchPublishedPanes(
       signal: AbortSignal.timeout(4_000)
     })
     if (!response.ok) {
-      await cancelUnreadResponseBody(response)
+      await cancelUnreadHttpBody(response)
       return []
     }
     return parsePublishedPanes(await response.json(), trimmed)

@@ -1,5 +1,5 @@
-import { cancelUnreadResponseBody } from '../../src/main/lib/unread-response-body'
 import type { AgentOsEndpointConfig } from '../../src/shared/agent-os-endpoints'
+import { cancelUnreadHttpBody } from './unread-http-body'
 import {
   agentOsSurfaceUrl,
   httpSidecarUrl,
@@ -18,15 +18,7 @@ export type WorkstationCheck = WorkstationTarget & {
   detail: string
 }
 
-export type WorkstationProbeResponse = {
-  ok: boolean
-  status?: number
-}
-
-export type WorkstationProbe = (
-  url: string,
-  init?: { signal?: AbortSignal }
-) => Promise<WorkstationProbeResponse>
+export type WorkstationProbe = typeof fetch
 
 const PROBE_TIMEOUT_MS = 4_000
 
@@ -84,10 +76,8 @@ async function probeOne(
 ): Promise<WorkstationCheck> {
   try {
     const response = await fetchImpl(target.url, { signal: AbortSignal.timeout(PROBE_TIMEOUT_MS) })
-    if (response instanceof Response) {
-      await cancelUnreadResponseBody(response)
-    }
-    const status = response.status ?? (response.ok ? 200 : 0)
+    await cancelUnreadHttpBody(response)
+    const status = response.status
     if (response.ok) {
       return { ...target, state: 'up', detail: `HTTP ${status}` }
     }
